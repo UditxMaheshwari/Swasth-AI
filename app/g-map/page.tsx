@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyANlx2q3otRyXCe-wQywXGWA5iKhDkkCdE"
+const GOOGLE_MAPS_API_KEY = ""
 
 declare global {
   interface Window {
