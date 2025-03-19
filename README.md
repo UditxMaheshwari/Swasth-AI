@@ -1,10 +1,8 @@
 # 🌿 GramAarogya: Revolutionizing Rural Healthcare
 
-![GitHub](https://img.shields.io/badge/status-under%20development-yellow)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.x-green)
 ![React](https://img.shields.io/badge/React-18.x-blue)
-![License](https://img.shields.io/badge/license-MIT-brightgreen)
 
 ## 🔍 What is GramAarogya?
 
