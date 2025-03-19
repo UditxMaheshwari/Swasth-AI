@@ -135,7 +135,7 @@ Body:
 
 ## 🙏 Acknowledgments
 
-- aiXplain for AI model support
+- aiXplain for AI model support & custom model creation
 - Google Maps API for location services
 
 ---
