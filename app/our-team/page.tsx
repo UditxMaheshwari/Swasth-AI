@@ -4,15 +4,13 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import { Github, Linkedin } from "lucide-react"
-import { Mail } from "lucide-react"
+import { Github, Linkedin, Mail, User, UserCircle } from "lucide-react"
 
 const teamMembers = [
   {
     name: "Siddharth Mishra",
     role: "AI Developer",
     bio: "Siddharth is a skilled AI developer with expertise in deep learning and natural language processing. He specializes in building AI-driven solutions for healthcare and automation.",
-    image: "/images/sid1.png",
     links: {
       github: "https://github.com/Sid3503",
       linkedin: "https://www.linkedin.com/in/siddharth-mishra-0a5227228/",
@@ -23,7 +21,6 @@ const teamMembers = [
     name: "Manoday Kadam",
     role: "AI Developer & Cloud Specialist",
     bio: "Manoday is an AI developer with a strong background in cloud computing and scalable AI solutions. He excels in deploying AI models on cloud platforms for efficient real-world applications.",
-    image: "/images/manoday.png",
     links: {
       github: "https://github.com/Manoday10",
       linkedin: "https://www.linkedin.com/in/manoday-kadam-3b1a74268/",
@@ -34,7 +31,6 @@ const teamMembers = [
     name: "Prachiti Palande",
     role: "UI/UX Specialist",
     bio: "Prachiti is a creative UI/UX designer who focuses on crafting intuitive and engaging user experiences. She ensures that AI-powered applications are accessible and user-friendly.",
-    image: "https://source.unsplash.com/random/400x400?portrait=3",
     links: {
       github: "https://github.com/mikejohnson",
       linkedin: "https://linkedin.com/in/mikejohnson",
@@ -45,7 +41,6 @@ const teamMembers = [
     name: "Priyadarshini Chavan",
     role: "Frontend Designer & ML Specialist",
     bio: "Priyadarshini is a frontend designer with a strong grasp of machine learning. She bridges the gap between AI models and user interfaces, ensuring seamless integration and performance.",
-    image: "https://source.unsplash.com/random/400x400?portrait=4",
     links: {
       github: "https://github.com/Priyadarshini75",
       linkedin: "https://www.linkedin.com/in/priyadarshinii/",
@@ -62,11 +57,13 @@ const TeamMember = ({ member, index }) => {
       transition={{ duration: 0.5, delay: index * 0.2 }}
       className="bg-gray-900 dark:bg-black border border-gray-700 rounded-lg shadow-lg overflow-hidden"
     >
-      <img
-        src={member.image || "/placeholder.svg"}
-        alt={member.name}
-        className="w-full h-48 sm:h-56 md:h-64 object-cover"
-      />
+      <div className="h-48 sm:h-56 md:h-64 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+        {index < 2 ? (
+          <User className="w-24 h-24 sm:w-32 sm:h-32 text-blue-400" />
+        ) : (
+          <UserCircle className="w-24 h-24 sm:w-32 sm:h-32 text-purple-400" />
+        )}
+      </div>
       <div className="p-3 sm:p-4 md:p-6">
         <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2 text-white">{member.name}</h3>
         <p className="text-xs sm:text-sm text-gray-400 mb-2 sm:mb-4">{member.role}</p>
@@ -139,4 +136,3 @@ export default function OurTeam() {
     </div>
   )
 }
-
