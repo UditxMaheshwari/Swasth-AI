@@ -31,7 +31,7 @@ We are integrating cutting-edge AI and location-based services to make healthcar
 - Keeps users informed about health-related news, conditions, and updates specific to their area
 - Offers expert-curated blogs, articles, and news to promote health literacy and preventive care
 
-### 📊 Health Insights Dashboard (Aarogya Analytics)
+### 📊 Health Insights Dashboard (Aarogya View)
 - Interactive visualizations showing urban-rural health disparities in India
 - Charts and graphs for different health metrics including:
   - Urban vs rural healthcare access comparison
