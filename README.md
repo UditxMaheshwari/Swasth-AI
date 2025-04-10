@@ -152,4 +152,12 @@ Body:
 
 > **Because everyone deserves good health—anytime, anywhere.**
 
-For any questions or issues, please open an issue on the [@Siddharth Mishra](https://github.com/Sid3503)
+## 👤 Author
+
+For any questions or issues, please open an issue on GitHub: [@Siddharth Mishra](https://github.com/Sid3503)
+
+---
+
+<p align="center">
+  Made with ❤️ and lots of ☕
+</p>
