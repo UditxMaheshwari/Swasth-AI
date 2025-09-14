@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Stethoscope } from "lucide-react";
 
 const translations = [
   { lang: "English", text: "Your Health, Our Priority" },
@@ -18,7 +19,6 @@ function FloatingPaths({ position }: { position: number }) {
   const paths = Array.from({ length: 36 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    color: `rgba(15,23,42,${0.1 + i * 0.03})`,
     width: 0.5 + i * 0.03,
   }));
 
@@ -30,7 +30,7 @@ function FloatingPaths({ position }: { position: number }) {
           <motion.path
             key={path.id}
             d={path.d}
-            stroke="currentColor"
+            stroke="grey"
             strokeWidth={path.width}
             strokeOpacity={0.1 + path.id * 0.03}
             initial={{ pathLength: 0.3, opacity: 0.6 }}
@@ -62,10 +62,13 @@ export default function BackgroundPaths() {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white dark:bg-neutral-950">
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden medical-bg dark:medical-bg-dark">
       <div className="absolute inset-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
+        {/* Medical background elements */}
+        <div className="absolute top-20 right-20 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-green-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
@@ -82,21 +85,24 @@ export default function BackgroundPaths() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.8 }}
-              className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-neutral-900 to-neutral-700/80 dark:from-white dark:to-white/80"
+              className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/90 to-accent"
             >
               {translations[index].text}
             </motion.span>
           </h1>
 
           <div
-            className="inline-block group relative bg-gradient-to-b from-black/10 to-white/10 dark:from-white/10 dark:to-black/10 p-px rounded-2xl backdrop-blur-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="inline-block group relative bg-gradient-to-b from-primary/10 to-accent/10 p-px rounded-2xl backdrop-blur-lg overflow-hidden medical-glow hover:shadow-xl transition-shadow duration-300"
           >
             <Link href="/hero">
               <Button
                 variant="ghost"
-                className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md bg-white/95 hover:bg-white/100 dark:bg-black/95 dark:hover:bg-black/100 text-black dark:text-white transition-all duration-300 group-hover:-translate-y-0.5 border border-black/10 dark:border-white/10 hover:shadow-md dark:hover:shadow-neutral-800/50"
+                className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md bg-card/95 hover:bg-card/100 text-primary transition-all duration-300 group-hover:-translate-y-0.5 border border-primary/20 hover:shadow-md medical-card dark:medical-card-dark"
               >
-                <span className="opacity-90 group-hover:opacity-100 transition-opacity">Discover Excellence</span>
+                <span className="opacity-90 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                  <Stethoscope className="h-5 w-5" />
+                  Start Your Health Journey
+                </span>
                 <span
                   className="ml-3 opacity-70 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-300"
                 >
@@ -109,5 +115,4 @@ export default function BackgroundPaths() {
       </div>
     </div>
   );
-}
-
+    }

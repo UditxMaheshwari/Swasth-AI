@@ -2,9 +2,9 @@ import { HeartPulse, Languages, MapPin, Stethoscope } from "lucide-react";
 
 const features = [
   {
-    name: "AI-Powered Medical Assistance",
+    name: "AI-Powered 3D Explanation",
     description:
-      "Our AI analyzes symptoms and provides preliminary diagnoses, helping users understand their health conditions quickly.",
+      "Our AI analyzes the disease and creates a 3D explanation video to it.",
     icon: HeartPulse,
   },
   {
@@ -14,15 +14,15 @@ const features = [
     icon: Languages,
   },
   {
-    name: "Location-Based Doctor Matching",
+    name: "Real Time Alert",
     description:
-      "Find the nearest available doctors and medical facilities using GPS technology, ensuring timely assistance.",
+      "Our AI helps to create a real time alert warning to consult doctor if it identifies serious symptoms.",
     icon: MapPin,
   },
   {
-    name: "Seamless Doctor Connection",
+    name: "Swasth Bank",
     description:
-      "Connect instantly with healthcare professionals via video calls or chat for remote consultations and advice.",
+      "Keep a record for your family insights at one place.",
     icon: Stethoscope,
   },
 ];
@@ -35,7 +35,7 @@ export default function Features() {
           Revolutionizing Rural Healthcare
         </h2>
         <p className="mt-4 text-sm sm:text-base text-muted-foreground">
-          Empowering rural communities with AI-driven medical solutions, multilingual support, and instant access to healthcare professionals.
+          Empowering rural communities with AI-driven medical alerts, multilingual support, and instant 3D Explanation and awareness.
         </p>
       </div>
       <div className="mx-auto grid max-w-5xl grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">

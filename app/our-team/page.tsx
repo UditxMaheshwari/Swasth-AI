@@ -8,45 +8,66 @@ import { Github, Linkedin, Mail, User, UserCircle } from "lucide-react"
 
 const teamMembers = [
   {
-    name: "Siddharth Mishra",
-    role: "AI Developer",
-    bio: "Siddharth is a skilled AI developer with expertise in deep learning and natural language processing. He specializes in building AI-driven solutions for healthcare and automation.",
+    name: "Udit Maheshwari",
+    role: "Frontend Designer & Backend Developer",
+    bio: "Udit is a skilled MErnStack develoepr.",
     links: {
-      github: "https://github.com/Sid3503",
-      linkedin: "https://www.linkedin.com/in/siddharth-mishra-0a5227228/",
-      email: "mishrasiddharth072@gmail.com",
+      github: "",
+      linkedin: "",
+      email: "",
     },
   },
   {
-    name: "Manoday Kadam",
-    role: "AI Developer & Cloud Specialist",
-    bio: "Manoday is an AI developer with a strong background in cloud computing and scalable AI solutions. He excels in deploying AI models on cloud platforms for efficient real-world applications.",
+    name: "Shahzad Khan",
+    role: "Database & Cloud Specialist",
+    bio: "Shahzad is an Databse and cloud specialist with a strong background in cloud computing and scalable AI solutions.",
     links: {
-      github: "https://github.com/Manoday10",
-      linkedin: "https://www.linkedin.com/in/manoday-kadam-3b1a74268/",
-      email: "manodaykadam105@gmail.com",
+      github: "",
+      linkedin: "",
+      email: "",
     },
   },
   {
-    name: "Prachiti Palande",
-    role: "UI/UX Specialist",
-    bio: "Prachiti is a creative UI/UX designer who focuses on crafting intuitive and engaging user experiences. She ensures that AI-powered applications are accessible and user-friendly.",
+    name: "Ishan Khan",
+    role: "ThreeJS expert",
+    bio: "IShan is an expert in three js models enhancing 3d model structure .",
     links: {
-      github: "https://github.com/mikejohnson",
-      linkedin: "https://linkedin.com/in/mikejohnson",
-      email: "prachitipalande191@gmail.com",
+      github: "",
+      linkedin: "",
+      email:"",
+      },
+    },
+    {
+    name: "Suraj Kumar Ojha",
+    role: "ThreeJS Specialist",
+    bio: "Suraj is an expert in three js models enhancing 3d model structure .",
+    links: {
+      github: "",
+      linkedin: "",
+      email:"",
+      },
+  },
+  {
+    name: "Riya",
+    role: "ML Specialist",
+    bio: "Riya is a creative ML designer who focuses on crafting intuitive and engaging models along with it's profieciency'. She ensures that AI-powered applications have extreme precision.",
+    links: {
+      github: "",
+      linkedin: "",
+      email: "",
     },
   },
   {
-    name: "Priyadarshini Chavan",
-    role: "Frontend Designer & ML Specialist",
-    bio: "Priyadarshini is a frontend designer with a strong grasp of machine learning. She bridges the gap between AI models and user interfaces, ensuring seamless integration and performance.",
+    name: "Muskan",
+    role: " ML Specialist",
+    bio: "Riya is a creative ML designer who focuses on crafting intuitive and engaging models along with it's profieciency'. She ensures that AI-powered applications have extreme precision",
     links: {
-      github: "https://github.com/Priyadarshini75",
-      linkedin: "https://www.linkedin.com/in/priyadarshinii/",
-      email: "priyadarshinichavan75@gmail.com",
+      github: "",
+      linkedin: "",
+      email: "",
     },
-  },
+    },
+    
 ]
 
 const TeamMember = ({ member, index }) => {
@@ -58,7 +79,7 @@ const TeamMember = ({ member, index }) => {
       className="bg-gray-900 dark:bg-black border border-gray-700 rounded-lg shadow-lg overflow-hidden"
     >
       <div className="h-48 sm:h-56 md:h-64 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
-        {index < 2 ? (
+        {index < 4 ? (
           <User className="w-24 h-24 sm:w-32 sm:h-32 text-blue-400" />
         ) : (
           <UserCircle className="w-24 h-24 sm:w-32 sm:h-32 text-purple-400" />
@@ -125,10 +146,8 @@ export default function OurTeam() {
         >
           <h2 className="text-2xl font-semibold mb-4 pt-10">Our Vision</h2>
           <p className="text-gray-400">
-            At GramAarogya, we envision a world where quality healthcare is accessible to everyone, regardless of their
-            location or economic status. Our mission is to leverage cutting-edge technology to bridge the gap between
-            rural communities and healthcare professionals, ensuring that every individual has access to timely and
-            effective medical advice and support.
+            At SwasthAI, we aim to make everyone aware of diseases by explaining them through interactive 3D models and providing real-time alerts.
+            Our goal is to simplify complex medical information, making it easy to understand for everyone, and empower individuals to take timely action for their health.
           </p>
         </motion.section>
       </main>

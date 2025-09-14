@@ -2,15 +2,15 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react" // Icons for dropdown
+import { ChevronDown, ChevronUp, Stethoscope } from "lucide-react" // Icons for dropdown
 
 const translations = [
-  { lang: "English", text: "GramAarogya" },
-  { lang: "हिन्दी", text: "ग्रामआरोग्य" },
-  { lang: "ગુજરાતી", text: "ગ્રામઆરોગ્ય" },
-  { lang: "বাংলা", text: "গ্রামআরোগ্য" },
-  { lang: "मराठी", text: "ग्रामआरोग्य" },
-  { lang: "தமிழ்", text: "கிராமாரோக்கிய" },
+  { lang: "English", text: "SwasthAI" },
+  { lang: "हिन्दी", text: "स्वस्थAI" },
+  { lang: "ગુજરાતી", text: "સ્વસ્થAI" },
+  { lang: "বাংলা", text: "স্বস্থAI" },
+  { lang: "मराठी", text: "स्वस्थAI" },
+  { lang: "தமிழ்", text: "ஸ்வஸ்த்AI" },
 ]
 
 const greetings = [
@@ -43,12 +43,15 @@ export default function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-lg">
-      <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left Side: Animated GramAarogya */}
-        <div className="flex items-center space-x-2">
-          <Link href="/hero" className="mr-6 flex items-center">
-            <span className="text-xl font-bold italic transition-all duration-1000 sm:text-2xl lg:text-3xl">
+    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-background/95 backdrop-blur-lg medical-glow">
+      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Left Side: Animated SwasthAI with Health Icon */}
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-primary/10 rounded-full">
+            <Stethoscope className="h-6 w-6 text-primary" />
+          </div>
+          <Link href="/hero" className="flex items-center">
+            <span className="text-xl font-bold italic transition-all duration-1000 sm:text-2xl lg:text-3xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {translations[indexLeft].text}
             </span>
           </Link>
@@ -57,22 +60,18 @@ export default function Navbar() {
         {/* Desktop Navbar Links */}
         <nav className="hidden sm:flex flex-1 items-center justify-center space-x-4 sm:space-x-6 text-sm font-medium">
           <Link href="/health-check" className="transition-colors hover:text-primary">
-            AarogyaMitraAI
+            SwasthAI
           </Link>
           <Link href="/find-doctor" className="transition-colors hover:text-primary">
-            AarogyaConnect
+            SwasthDoc
           </Link>
-          <Link href="/g-map" className="transition-colors hover:text-primary">
-            AarogyaMap
-          </Link>
-          <Link href="/news-help" className="transition-colors hover:text-primary">
-            AarogyaPulse
-          </Link>
+          
+  
           <Link href="/health-insights" className="transition-colors hover:text-primary">
-            AarogyaView
+            SwasthBank
           </Link>
           <Link href="/our-team" className="transition-colors hover:text-primary">
-            AarogyaParivar
+            SwasthParivar
           </Link>
         </nav>
 
@@ -98,42 +97,29 @@ export default function Navbar() {
                 className="block py-2 text-base font-medium hover:text-primary transition"
                 onClick={() => setDropdownOpen(false)}
               >
-                AarogyaMitraAI
+                SwasthAI
               </Link>
               <Link
                 href="/find-doctor"
                 className="block py-2 text-base font-medium hover:text-primary transition"
                 onClick={() => setDropdownOpen(false)}
               >
-                AarogyaConnect
+                SwasthDoc
               </Link>
-              <Link
-                href="/g-map"
-                className="block py-2 text-base font-medium hover:text-primary transition"
-                onClick={() => setDropdownOpen(false)}
-              >
-                AarogyaMap
-              </Link>
-              <Link
-                href="/news-help"
-                className="block py-2 text-base font-medium hover:text-primary transition"
-                onClick={() => setDropdownOpen(false)}
-              >
-                AarogyaPulse
-              </Link>
+             
               <Link
                 href="/health-insights"
                 className="block py-2 text-base font-medium hover:text-primary transition"
                 onClick={() => setDropdownOpen(false)}
               >
-                AarogyaView
+                SwasthBank
               </Link>
               <Link
                 href="/our-team"
                 className="block py-2 text-base font-medium hover:text-primary transition"
                 onClick={() => setDropdownOpen(false)}
               >
-                AarogyaParivar
+                SwasthParivar
               </Link>
             </div>
           )}

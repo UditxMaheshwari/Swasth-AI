@@ -3,11 +3,16 @@ import { Github, Twitter, Linkedin } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="border-t">
-      <div className="container flex flex-col gap-8 py-8 md:flex-row md:py-12">
+    <footer className="border-t border-primary/20 bg-gradient-to-r from-background to-background/50 medical-pattern">
+      <div className="container flex flex-col gap-8 py-12 md:flex-row md:py-16">
         <div className="flex-1 space-y-4">
-          <h2 className="font-bold">GramAarogya</h2>
-          <p className="text-sm text-muted-foreground">Revolutionizing Rural Healthcare</p>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-full">
+              <span className="text-primary text-lg">🩺</span>
+            </div>
+            <h2 className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">SwasthAI</h2>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-sm">Revolutionizing Heathcare with Easy and Accessible explanation.</p>
         </div>
         <div className="grid flex-1 grid-cols-2 gap-12 sm:grid-cols-3">
           <div className="space-y-4">
@@ -15,27 +20,19 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/health-check" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaMitra AI
+                  SwasthAI
                 </Link>
               </li>
               <li>
                 <Link href="/find-doctor" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaConnect
+                  SwasthDoc
                 </Link>
               </li>
-              <li>
-                <Link href="/g-map" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaMap
-                </Link>
-              </li>
-              <li>
-                <Link href="/news-help" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaPulse
-                </Link>
-              </li>
+             
+            
               <li>
                 <Link href="/health-insights" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaView
+                  SwasthBank
                 </Link>
               </li>
             </ul>
@@ -45,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/our-team" className="text-muted-foreground transition-colors hover:text-primary">
-                  AarogyaParivar
+                  SwasthParivar
                 </Link>
               </li>
             </ul>
@@ -54,14 +51,14 @@ export default function Footer() {
             <h3 className="text-sm font-medium">Connect</h3>
             <div className="flex space-x-4">
               <Link
-                href="https://github.com/Sid3503"
+                href="https://github.com/UditxMaheshwari"
                 className="text-muted-foreground transition-colors hover:text-primary"
               >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
-                href="https://www.linkedin.com/in/siddharth-mishra-0a5227228/"
+                href="https://www.linkedin.com/in/udit-maheshwari-524b9b303/"
                 className="text-muted-foreground transition-colors hover:text-primary"
               >
                 <Linkedin className="h-5 w-5" />
@@ -73,7 +70,7 @@ export default function Footer() {
       </div>
       <div className="container border-t py-6">
         <p className="text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} GramAarogya
+          © {new Date().getFullYear()} SwasthAI
         </p>
       </div>
     </footer>

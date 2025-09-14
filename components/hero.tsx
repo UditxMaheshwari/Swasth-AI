@@ -1,10 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import MedicalChatbot from "@/components/medical-chatbot"
 
 const translations = [
   { lang: "English", text: "AI-Powered Healthcare Support" },
@@ -17,7 +15,6 @@ const translations = [
 
 export default function Hero() {
   const [index, setIndex] = useState(0)
-  const router = useRouter()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,62 +24,73 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="container relative flex min-h-[calc(100vh-3.5rem)] max-w-screen-2xl flex-col items-center justify-center space-y-8 py-20 px-4 text-center sm:py-28 md:py-36">
-      {/* Floating AI Animation (Hidden on Mobile) */}
-      <motion.div
-        className="absolute top-10 right-10 hidden md:block"
-        initial={{ y: -20 }}
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-      />
+    <section className="container relative max-w-screen-2xl mx-auto py-20 px-4 sm:py-28 md:py-36 medical-bg dark:medical-bg-dark medical-pattern">
+      {/* Medical Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-20 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-green-500/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
+      </div>
 
-      {/* Animated Heading */}
-      <motion.div
-        className="space-y-2 sm:space-y-4"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.h1
-          key={index}
-          className="pt-4 sm:pt-6 bg-gradient-to-br from-foreground from-30% via-foreground/90 to-foreground/70 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight transition-all duration-1000"
-          initial={{ opacity: 0, y: -10 }}
+      <div className="relative z-10 space-y-12">
+        {/* Animated Heading */}
+        <motion.div
+          className="text-center space-y-4"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.h1
+            key={index}
+            className="bg-gradient-to-br from-primary via-primary/90 to-accent bg-clip-text text-transparent text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight transition-all duration-1000"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.8 }}
+          >
+            {translations[index].text}
+          </motion.h1>
+          <motion.p 
+            className="mx-auto max-w-[48rem] leading-relaxed text-muted-foreground text-base sm:text-lg md:text-xl px-4 sm:px-0"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Experience the future of healthcare with SwasthAI. Get instant medical guidance, upload symptoms through images, 
+            or speak directly to our AI assistant. Your health journey starts with a simple conversation.
+          </motion.p>
+        </motion.div>
+
+        {/* Medical Chatbot */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="flex justify-center"
         >
-          {translations[index].text}
-        </motion.h1>
-        <p className="mx-auto max-w-[42rem] leading-normal text-muted-foreground text-sm sm:text-base md:text-lg sm:leading-7 md:leading-8 px-4 sm:px-0">
-          Get instant AI-driven health advice and find the nearest doctors and healthcare professionals tailored to your
-          condition.
-        </p>
-      </motion.div>
+          <MedicalChatbot />
+        </motion.div>
 
-      {/* Buttons (Stack on Mobile) */}
-      <motion.div
-        className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none justify-center px-4 sm:px-0"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3 }}
-      >
-        <Button
-          size="lg"
-          className="w-full sm:w-auto text-sm sm:text-base"
-          onClick={() => router.push("/health-check")}
+        {/* Medical Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto text-center"
         >
-          Check Your Health
-          <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full sm:w-auto text-sm sm:text-base"
-          onClick={() => router.push("/find-doctor")}
-        >
-          Find Nearby Doctors
-        </Button>
-      </motion.div>
+          {[
+            { label: "3D Expanation", value: "24/7", icon: "🤖" },
+            { label: "Languages Supported", value: "5+", icon: "🗣️" },
+            { label: "Disease Knowledge", value: "10+", icon: "📋" }
+          ].map((stat, index) => (
+            <div key={stat.label} className="medical-card dark:medical-card-dark p-6 rounded-xl">
+              <div className="text-2xl mb-2">{stat.icon}</div>
+              <div className="text-2xl font-bold text-primary">{stat.value}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   )
 }
