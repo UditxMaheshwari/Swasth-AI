@@ -4,13 +4,14 @@ import type React from "react"
 import type { Metadata } from "next"
 import MouseMoveEffect from "@/components/mouse-move-effect"
 import "leaflet/dist/leaflet.css"
+import { AuthProvider } from "@/contexts/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "SwasthAI - Cutting-Edge 3D Healthcare Explanation",
   description: "SwasthAI delivers innovative, high-performance 3D healthcare video solutions for businesses of the future.",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -21,13 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-background text-foreground antialiased`}>
-        <MouseMoveEffect />
-        {children}
+        <AuthProvider>
+          <MouseMoveEffect />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
 }
-
-
-
-import './globals.css'

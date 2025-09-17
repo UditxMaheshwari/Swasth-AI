@@ -87,6 +87,69 @@
   .xs\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  
+  .xs\:inline {
+    display: inline;
+  }
+  
+  .xs\:hidden {
+    display: none;
+  }
+  
+  .xs\:flex-row {
+    flex-direction: row;
+  }
+  
+  .xs\:w-auto {
+    width: auto;
+  }
+  
+  /* Responsive text sizes */
+  .text-responsive-xs {
+    font-size: 0.75rem;
+  }
+  
+  .text-responsive-sm {
+    font-size: 0.875rem;
+  }
+  
+  .text-responsive-base {
+    font-size: 1rem;
+  }
+  
+  .text-responsive-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-responsive-xl {
+    font-size: 1.25rem;
+  }
+  
+  /* Responsive spacing */
+  .p-responsive-sm {
+    padding: 0.5rem;
+  }
+  
+  .p-responsive-base {
+    padding: 0.75rem;
+  }
+  
+  .p-responsive-lg {
+    padding: 1rem;
+  }
+  
+  /* Responsive heights */
+  .h-responsive-sm {
+    height: 2rem;
+  }
+  
+  .h-responsive-base {
+    height: 2.5rem;
+  }
+  
+  .h-responsive-lg {
+    height: 3rem;
+  }
 
   /* Custom scrollbar for all devices */
   .custom-scrollbar::-webkit-scrollbar {
@@ -97,24 +160,104 @@
     background: #1f1f1f;
     border-radius: 10px;
   }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+  
+  /* Improved spacing for mobile */
+  .space-y-responsive > * + * {
+    margin-top: clamp(0.5rem, 2vw, 1rem);
   }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  
+  .space-x-responsive > * + * {
+    margin-left: clamp(0.5rem, 2vw, 1rem);
   }
-
-  /* Responsive text sizing */
-  .text-responsive {
-    font-size: clamp(0.75rem, 2vw, 1rem);
+  
+  /* Improved form elements */
+  .form-input:focus, 
+  .form-select:focus, 
+  .form-textarea:focus {
+    @apply ring-2 ring-primary/50 outline-none;
   }
-
-  .heading-responsive {
-    font-size: clamp(1.25rem, 4vw, 2.5rem);
+  
+  /* Improved card styles */
+  .card-hover {
+    @apply transition-shadow duration-200;
   }
+  
+  .card-hover:hover {
+    @apply shadow-lg;
+  }
+  
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+/* Media query for mobile devices */
+@media (max-width: 640px) {
+  .card-content-mobile {
+    padding: 1rem;
+  }
+  
+  .card-header-mobile {
+    padding: 1rem;
+  }
+  
+  .card-footer-mobile {
+    padding: 1rem;
+  }
+  
+  .input-mobile {
+    height: 2.25rem;
+  }
+  
+  .button-mobile {
+    height: 2.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .heading-mobile {
+    font-size: 1.25rem;
+  }
+  
+  .text-mobile {
+    font-size: 0.875rem;
+  }
+  
+  .text-small-mobile {
+    font-size: 0.75rem;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive text sizing */
+.text-responsive {
+  font-size: clamp(0.75rem, 2vw, 1rem);
+}
+
+.heading-responsive {
+  font-size: clamp(1.25rem, 4vw, 2.5rem);
 }
 
 /* Responsive container padding */
@@ -259,6 +402,7 @@
     rgba(239, 246, 255, 0.9) 100%);
   border: 1px solid rgba(29, 78, 216, 0.2);
   box-shadow: 0 2px 10px rgba(29, 78, 216, 0.1);
+  color: #1e293b; /* Added explicit dark text color for better visibility */
 }
 
 .swasth-message-bot-dark {
@@ -267,6 +411,7 @@
     rgba(51, 65, 85, 0.9) 100%);
   border: 1px solid rgba(59, 130, 246, 0.3);
   box-shadow: 0 2px 10px rgba(29, 78, 216, 0.2);
+  color: #e2e8f0; /* Added explicit light text color for better visibility in dark mode */
 }
 
 .swasth-pulse {
@@ -283,4 +428,3 @@
     transform: scale(1.05);
   }
 }
-

@@ -168,8 +168,8 @@ export default function MedicalChatbot() {
               <Stethoscope className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-foreground">SwasthAI Medical Assistant</h2>
-              <p className="text-sm text-muted-foreground">Your AI-powered healthcare companion</p>
+              <h2 className="text-lg font-semibold text-foreground dark:text-foreground">SwasthAI Medical Assistant</h2>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground/90">Your AI-powered healthcare companion</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -221,7 +221,7 @@ export default function MedicalChatbot() {
                       )}
                       <p className="text-sm">{message.content}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground/80 mt-1">
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -245,7 +245,7 @@ export default function MedicalChatbot() {
                       <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                       <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                     </div>
-                    <span className="text-sm text-muted-foreground">SwasthAI is typing...</span>
+                    <span className="text-sm text-foreground dark:text-foreground/90">SwasthAI is typing...</span>
                   </div>
                 </div>
               </motion.div>
@@ -262,7 +262,7 @@ export default function MedicalChatbot() {
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your health question here..."
-                  className="pr-12 bg-background border-border"
+                  className="pr-12 bg-background border-border text-foreground dark:text-foreground placeholder:text-muted-foreground/70 dark:placeholder:text-muted-foreground/70"
                 />
                 <Button
                   type="button"

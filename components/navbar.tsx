@@ -2,7 +2,19 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ChevronDown, ChevronUp, Stethoscope } from "lucide-react" // Icons for dropdown
+import { useRouter } from "next/navigation"
+import { ChevronDown, ChevronUp, Stethoscope, User, LogIn, UserPlus, LogOut } from "lucide-react" // Icons for dropdown
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/contexts/auth-context"
 
 const translations = [
   { lang: "English", text: "SwasthAI" },
@@ -26,6 +38,9 @@ export default function Navbar() {
   const [indexLeft, setIndexLeft] = useState(0)
   const [indexRight, setIndexRight] = useState(0)
   const [dropdownOpen, setDropdownOpen] = useState(false) // Controls dropdown expansion
+  const [showAuthOptions, setShowAuthOptions] = useState(false) // For login/signup dropdown
+  const { user, signOut } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const intervalLeft = setInterval(() => {
@@ -121,15 +136,120 @@ export default function Navbar() {
               >
                 SwasthParivar
               </Link>
+              {!user && (
+                <>
+                  <button
+                    className="block w-full py-2 text-base font-medium hover:text-primary transition"
+                    onClick={() => {
+                      router.push("/auth/login");
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    Login
+                  </button>
+                  <button
+                    className="block w-full py-2 text-base font-medium hover:text-primary transition"
+                    onClick={() => {
+                      router.push("/auth/signup");
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
+              {user && (
+                <>
+                  <button
+                    className="block w-full py-2 text-base font-medium hover:text-primary transition"
+                    onClick={() => {
+                      router.push("/profile");
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    className="block w-full py-2 text-base font-medium hover:text-primary transition"
+                    onClick={async () => {
+                      await signOut();
+                      setDropdownOpen(false);
+                      router.push("/auth/login");
+                    }}
+                  >
+                    Log Out
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
 
-        {/* Right Side: Animated Hello (Now Visible on Mobile Too) */}
+        {/* Right Side: Animated Hello with Login/Profile */}
         <div className="flex items-center space-x-4">
           <span className="text-lg font-bold italic transition-all duration-1000 sm:text-xl lg:text-2xl">
             {greetings[indexRight].text}
           </span>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar>
+                    <AvatarImage src="/user-avatar.svg" alt="User" />
+                    <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="/profile" className="flex w-full items-center">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/family-vault" className="flex w-full items-center">Family Vault</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/health-insights" className="flex w-full items-center">Health Records</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <button 
+                    onClick={async () => {
+                      await signOut();
+                      router.push("/auth/login");
+                    }}
+                    className="flex w-full items-center"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Log out
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden sm:flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => router.push("/auth/login")}
+                className="flex items-center gap-1"
+              >
+                <LogIn className="h-4 w-4" />
+                Login
+              </Button>
+              <Button 
+                variant="default" 
+                size="sm" 
+                onClick={() => router.push("/auth/signup")}
+                className="flex items-center gap-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+              >
+                <UserPlus className="h-4 w-4" />
+                Sign Up
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
