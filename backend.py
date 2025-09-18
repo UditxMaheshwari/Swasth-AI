@@ -22,7 +22,11 @@ news_model = ModelFactory.get(os.getenv("NEWS_MODEL_ID"))
 main_agent = AgentFactory.get(os.getenv("AGENT_MODEL_ID"))
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["*"])  # Configure for production domains later
+
+@app.route("/", methods=["GET"])
+def health_check():
+    return jsonify({"status": "healthy", "message": "SwasthAI Backend API is running"})
 
 def remove_markdown(text):
     text = re.sub(r'\*\*.*?\*\*', '', text)
@@ -142,4 +146,5 @@ def get_news():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

@@ -16,6 +16,12 @@ import type {
   HealthInsight,
   HealthInsightInsert,
   HealthInsightUpdate,
+  VaultDocument,
+  VaultDocumentInsert,
+  VaultDocumentUpdate,
+  EmergencyContact,
+  EmergencyContactInsert,
+  EmergencyContactUpdate,
 } from './database.types'
 
 // Profile operations
@@ -396,18 +402,150 @@ export const fileOperations = {
   }
 }
 
+// Vault document operations
+export const vaultOperations = {
+  // Get vault documents for a user
+  async getVaultDocuments(userId: string, documentType?: string): Promise<{ data: VaultDocument[] | null; error: Error | null }> {
+    try {
+      let query = supabase
+        .from('vault_documents')
+        .select('*')
+        .eq('user_id', userId)
+      
+      if (documentType) {
+        query = query.eq('document_type', documentType)
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false })
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Add vault document
+  async addVaultDocument(document: VaultDocumentInsert): Promise<{ data: VaultDocument | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('vault_documents')
+        .insert(document)
+        .select()
+        .single()
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Update vault document
+  async updateVaultDocument(id: string, updates: VaultDocumentUpdate): Promise<{ data: VaultDocument | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('vault_documents')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Delete vault document
+  async deleteVaultDocument(id: string): Promise<{ error: Error | null }> {
+    try {
+      const { error } = await supabase
+        .from('vault_documents')
+        .delete()
+        .eq('id', id)
+      
+      return { error }
+    } catch (error) {
+      return { error: error as Error }
+    }
+  }
+}
+
+// Emergency contact operations
+export const emergencyContactOperations = {
+  // Get emergency contacts for a user
+  async getEmergencyContacts(userId: string): Promise<{ data: EmergencyContact[] | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('emergency_contacts')
+        .select('*')
+        .eq('user_id', userId)
+        .order('is_primary', { ascending: false })
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Add emergency contact
+  async addEmergencyContact(contact: EmergencyContactInsert): Promise<{ data: EmergencyContact | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('emergency_contacts')
+        .insert(contact)
+        .select()
+        .single()
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Update emergency contact
+  async updateEmergencyContact(id: string, updates: EmergencyContactUpdate): Promise<{ data: EmergencyContact | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('emergency_contacts')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single()
+      
+      return { data, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  // Delete emergency contact
+  async deleteEmergencyContact(id: string): Promise<{ error: Error | null }> {
+    try {
+      const { error } = await supabase
+        .from('emergency_contacts')
+        .delete()
+        .eq('id', id)
+      
+      return { error }
+    } catch (error) {
+      return { error: error as Error }
+    }
+  }
+}
+
 // Realtime subscriptions
 export const subscriptionOperations = {
   // Subscribe to table changes
-  subscribeToTable(table: keyof Database['public']['Tables'], callback: (payload: any) => void, filter?: { column: string; value: any }) {
-    let channel = supabase.channel(`${table}_changes`)
-      .on('postgres_changes', { event: '*', schema: 'public', table }, callback)
+  subscribeToTable(table: keyof Database['public']['Tables'], callback: (payload: any) => void, userId?: string) {
+    let subscription = supabase.channel(`${table}_changes`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table,
+        filter: userId ? `user_id=eq.${userId}` : undefined
+      }, callback)
     
-    if (filter) {
-      channel = channel.filter(`${filter.column}=eq.${filter.value}`)
-    }
-    
-    return channel.subscribe()
+    return subscription.subscribe()
   },
 
   // Unsubscribe from channel

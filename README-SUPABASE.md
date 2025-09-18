@@ -1,4 +1,5 @@
 
+
 # SwasthAI - Supabase Integration Guide
 
 This guide will help you set up Supabase database integration for your SwasthAI healthcare management application.

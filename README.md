@@ -1,18 +1,35 @@
 # 🌿 GramSwasth: Revolutionizing Rural Healthcare
 
-![Python](https://img.shields.io/badge/Python-3.x-blue)
-![Flask](https://img.shields.io/badge/Flask-2.x-green)
-![React](https://img.shields.io/badge/React-18.x-blue)
+A comprehensive, secure, and user-friendly health management platform built with Next.js, TypeScript, and Supabase. SwasthAI enables users to manage their personal health information, family health records, medical appointments, and important documents in one centralized, secure location.
 
-## 🔍 What is GramSwasth?
+## 🌟 Features
 
-GramSwasth is an AI-powered healthcare platform designed to bridge the gap between rural communities and quality medical support. With multilingual capabilities, easy access to healthcare professionals, and AI-driven insights, GramSwasth ensures everyone, regardless of language or location, can access essential healthcare services.
+### 🔐 Authentication & Security
+- **Secure Authentication**: Email/password authentication with Supabase Auth
+- **Email Verification**: Required email confirmation for account security
+- **Row-Level Security**: Database-level security ensuring users only access their own data
+- **Protected Routes**: Middleware-based route protection
+- **Session Management**: Automatic session handling with refresh tokens
 
-## ✨ Features We Are Building
+### 👤 Profile Management
+- **Complete Profile Setup**: Personal information, contact details, medical info
+- **Profile Photo Upload**: Secure avatar storage with Supabase Storage
+- **Medical Information**: Blood group, allergies, emergency contacts
+- **Address Management**: Complete address information storage
 
-We are integrating cutting-edge AI and location-based services to make healthcare more accessible:
+### 👨‍👩‍👧‍👦 Family Vault
+- **Family Member Management**: Add and manage family members' health information
+- **Document Storage**: Secure upload and storage of important family documents
+- **Document Categories**: Identity, medical, insurance, legal, financial, education, photos
+- **File Management**: View, download, and delete documents with proper permissions
+- **Emergency Contacts**: Manage emergency contact information for the family
 
-### 🤖 Multilingual AI Health Assistant (Swasth Mitra AI)
+### 🏥 Health Records Management
+- **Medical Records**: Store prescriptions, lab reports, diagnoses, vaccinations, surgeries
+- **File Attachments**: Upload and attach medical documents to health records
+- **Family Health Tracking**: Track health records for all family members
+- **Advanced Filtering**: Filter records by type, family member, and date
+- **Doctor Information**: Store doctor and hospital information with each record
 - Users can input health conditions, symptoms, or queries in any Indian native language (text or audio) and receive responses in the same language
 - Powered by AI-driven insights, providing accurate remedies, treatments, and guidance
 - Built with aiXplain custom agents, ensuring high accuracy and adaptability for rural healthcare needs

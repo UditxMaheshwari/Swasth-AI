@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,53 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Derived password strength metadata
+  const strength = useMemo(() => {
+    const pwd = formData.password || "";
+    const length8 = pwd.length >= 8;
+    const length12 = pwd.length >= 12;
+    const lower = /[a-z]/.test(pwd);
+    const upper = /[A-Z]/.test(pwd);
+    const number = /\d/.test(pwd);
+    const symbol = /[^A-Za-z0-9]/.test(pwd);
+
+    // Score out of 6
+    let score = 0;
+    if (length8) score += 1;
+    if (lower) score += 1;
+    if (upper) score += 1;
+    if (number) score += 1;
+    if (symbol) score += 1;
+    if (length12) score += 1; // bonus for length
+
+    const percent = Math.round((score / 6) * 100);
+    let label = "Very weak";
+    if (score >= 5) label = "Very strong";
+    else if (score === 4) label = "Strong";
+    else if (score === 3) label = "Good";
+    else if (score === 2) label = "Fair";
+    else if (score <= 1) label = "Weak";
+
+    const color = score >= 5 ? "bg-emerald-500" :
+                  score === 4 ? "bg-green-500" :
+                  score === 3 ? "bg-yellow-500" :
+                  score === 2 ? "bg-orange-500" :
+                  "bg-red-500";
+
+    return {
+      percent,
+      label,
+      color,
+      checks: {
+        length8,
+        lower,
+        upper,
+        number,
+        symbol,
+      },
+    };
+  }, [formData.password]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -42,17 +89,52 @@ export default function SignupPage() {
       return;
     }
 
+    // Client-side password strength validation (align with Supabase default policy)
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const { error } = await signUp(formData.email, formData.password, { name: formData.name });
+      const { data, error } = await signUp(formData.email, formData.password, { name: formData.name });
       
       if (error) {
-        throw error;
+        // Map common Supabase auth errors to user-friendly messages
+        const anyErr: any = error as any;
+        const code = anyErr?.code as string | undefined;
+        const name = anyErr?.name as string | undefined;
+        const reasons: string[] | undefined = (anyErr?.reasons as string[]) || (anyErr?.cause?.reasons as string[]);
+
+        if (code === 'user_already_exists') {
+          setError('An account already exists with this email. Try signing in instead.');
+        } else if (code === 'weak_password' || name === 'AuthWeakPasswordError') {
+          if (reasons?.includes('length')) {
+            setError('Password is too weak: it must be at least 8 characters long.');
+          } else {
+            setError('Password is too weak. Please choose a stronger password.');
+          }
+        } else {
+          setError(anyErr?.message || 'Failed to create account. Please try again.');
+        }
+        setIsLoading(false);
+        return;
       }
       
-      // Redirect to login page after successful registration
-      router.push("/auth/login?registered=true");
+      // Check if email confirmation is required
+      if (data?.user && !data.session) {
+        // User created but needs email confirmation
+        router.push("/auth/login?message=check-email&email=" + encodeURIComponent(formData.email));
+      } else if (data?.session) {
+        // User is automatically signed in (email confirmation disabled)
+        router.push("/dashboard");
+      } else {
+        // Fallback - redirect to login
+        router.push("/auth/login?registered=true");
+      }
     } catch (err: any) {
-      setError(err.message || "Failed to create account. Please try again.");
+      // Network or unexpected error
+      setError(err?.message || "Failed to create account. Please try again.");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -116,6 +198,41 @@ export default function SignupPage() {
                 required
                 className="h-9 sm:h-10 text-sm sm:text-base"
               />
+              {/* Password strength meter */}
+              <div className="space-y-2 pt-1">
+                <div className="h-2 w-full bg-muted rounded">
+                  <div
+                    className={`h-2 rounded transition-all ${strength.color}`}
+                    style={{ width: `${strength.percent}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Strength: <span className="font-medium text-foreground">{strength.label}</span></span>
+                  <span>{strength.percent}%</span>
+                </div>
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  <li className={`flex items-center gap-2 ${strength.checks.length8 ? 'text-foreground' : ''}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${strength.checks.length8 ? 'bg-green-500' : 'bg-muted-foreground/50'}`} />
+                    At least 8 characters
+                  </li>
+                  <li className={`flex items-center gap-2 ${strength.checks.lower ? 'text-foreground' : ''}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${strength.checks.lower ? 'bg-green-500' : 'bg-muted-foreground/50'}`} />
+                    Lowercase letter
+                  </li>
+                  <li className={`flex items-center gap-2 ${strength.checks.upper ? 'text-foreground' : ''}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${strength.checks.upper ? 'bg-green-500' : 'bg-muted-foreground/50'}`} />
+                    Uppercase letter
+                  </li>
+                  <li className={`flex items-center gap-2 ${strength.checks.number ? 'text-foreground' : ''}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${strength.checks.number ? 'bg-green-500' : 'bg-muted-foreground/50'}`} />
+                    Number
+                  </li>
+                  <li className={`flex items-center gap-2 ${strength.checks.symbol ? 'text-foreground' : ''}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${strength.checks.symbol ? 'bg-green-500' : 'bg-muted-foreground/50'}`} />
+                    Symbol
+                  </li>
+                </ul>
+              </div>
             </div>
             <div className="space-y-1 sm:space-y-2">
               <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password</Label>

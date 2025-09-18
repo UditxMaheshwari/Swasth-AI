@@ -135,8 +135,8 @@ export default function DashboardPage() {
 
   if (isLoading || loading) {
     return (
-      <div className=\"flex items-center justify-center min-h-screen\">
-        <div className=\"text-lg\">Loading dashboard...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading dashboard...</div>
       </div>
     )
   }
@@ -146,18 +146,18 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className=\"container mx-auto px-4 py-8\">
-      <div className=\"mb-8\">
-        <h1 className=\"text-3xl font-bold text-gray-900\">Dashboard</h1>
-        <p className=\"text-gray-600 mt-2\">Welcome back, {profile?.full_name || user.email}!</p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-2">Welcome back, {profile?.full_name || user.email}!</p>
       </div>
 
       {/* Profile Section */}
-      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8\">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
-          <CardHeader className=\"flex flex-row items-center justify-between space-y-0 pb-2\">
-            <CardTitle className=\"text-sm font-medium\">Profile</CardTitle>
-            <Avatar className=\"h-8 w-8\">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Profile</CardTitle>
+            <Avatar className="h-8 w-8">
               <AvatarImage src={profile?.avatar_url || undefined} />
               <AvatarFallback>
                 {profile?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
@@ -165,12 +165,12 @@ export default function DashboardPage() {
             </Avatar>
           </CardHeader>
           <CardContent>
-            <div className=\"text-2xl font-bold\">{profile ? 'Complete' : 'Incomplete'}</div>
-            <p className=\"text-xs text-muted-foreground\">
+            <div className="text-2xl font-bold">{profile ? 'Complete' : 'Incomplete'}</div>
+            <p className="text-xs text-muted-foreground">
               {profile ? 'Profile information is complete' : 'Complete your profile'}
             </p>
             {!profile && (
-              <Button size=\"sm\" className=\"mt-2\" onClick={createSampleProfile}>
+              <Button size="sm" className="mt-2" onClick={createSampleProfile}>
                 Create Sample Profile
               </Button>
             )}
@@ -178,78 +178,78 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader className=\"flex flex-row items-center justify-between space-y-0 pb-2\">
-            <CardTitle className=\"text-sm font-medium\">Family Members</CardTitle>
-            <Users className=\"h-4 w-4 text-muted-foreground\" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Family Members</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className=\"text-2xl font-bold\">{familyMembers.length}</div>
-            <p className=\"text-xs text-muted-foreground\">
+            <div className="text-2xl font-bold">{familyMembers.length}</div>
+            <p className="text-xs text-muted-foreground">
               {familyMembers.length === 0 ? 'No family members added' : 'Family members added'}
             </p>
-            <Button size=\"sm\" className=\"mt-2\" onClick={addSampleFamilyMember}>
-              <Plus className=\"h-3 w-3 mr-1\" /> Add Sample Member
+            <Button size="sm" className="mt-2" onClick={addSampleFamilyMember}>
+              <Plus className="h-3 w-3 mr-1" /> Add Sample Member
             </Button>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className=\"flex flex-row items-center justify-between space-y-0 pb-2\">
-            <CardTitle className=\"text-sm font-medium\">Upcoming Appointments</CardTitle>
-            <CalendarDays className=\"h-4 w-4 text-muted-foreground\" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Upcoming Appointments</CardTitle>
+            <CalendarDays className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className=\"text-2xl font-bold\">{upcomingAppointments.length}</div>
-            <p className=\"text-xs text-muted-foreground\">
+            <div className="text-2xl font-bold">{upcomingAppointments.length}</div>
+            <p className="text-xs text-muted-foreground">
               {upcomingAppointments.length === 0 ? 'No upcoming appointments' : 'Scheduled appointments'}
             </p>
-            <Button size=\"sm\" className=\"mt-2\" onClick={addSampleAppointment}>
-              <Plus className=\"h-3 w-3 mr-1\" /> Add Sample Appointment
+            <Button size="sm" className="mt-2" onClick={addSampleAppointment}>
+              <Plus className="h-3 w-3 mr-1" /> Add Sample Appointment
             </Button>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className=\"flex flex-row items-center justify-between space-y-0 pb-2\">
-            <CardTitle className=\"text-sm font-medium\">Health Records</CardTitle>
-            <FileText className=\"h-4 w-4 text-muted-foreground\" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Health Records</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className=\"text-2xl font-bold\">{recentRecords.length}</div>
-            <p className=\"text-xs text-muted-foreground\">
+            <div className="text-2xl font-bold">{recentRecords.length}</div>
+            <p className="text-xs text-muted-foreground">
               {recentRecords.length === 0 ? 'No health records' : 'Recent health records'}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Family Members */}
         <Card>
           <CardHeader>
-            <CardTitle className=\"flex items-center gap-2\">
-              <Users className=\"h-5 w-5\" />
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
               Family Members
             </CardTitle>
             <CardDescription>Your registered family members</CardDescription>
           </CardHeader>
           <CardContent>
             {familyMembers.length === 0 ? (
-              <p className=\"text-gray-500 text-center py-4\">No family members added yet</p>
+              <p className="text-gray-500 text-center py-4">No family members added yet</p>
             ) : (
-              <div className=\"space-y-4\">
+              <div className="space-y-4">
                 {familyMembers.map((member) => (
-                  <div key={member.id} className=\"flex items-center justify-between p-3 border rounded-lg\">
-                    <div className=\"flex items-center gap-3\">
+                  <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
                       <Avatar>
                         <AvatarFallback>{member.full_name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className=\"font-medium\">{member.full_name}</p>
-                        <p className=\"text-sm text-gray-500\">{member.relationship}</p>
+                        <p className="font-medium">{member.full_name}</p>
+                        <p className="text-sm text-gray-500">{member.relationship}</p>
                       </div>
                     </div>
-                    <Badge variant=\"outline\">{member.blood_group || 'Unknown'}</Badge>
+                    <Badge variant="outline">{member.blood_group || 'Unknown'}</Badge>
                   </div>
                 ))}
               </div>
@@ -260,31 +260,31 @@ export default function DashboardPage() {
         {/* Upcoming Appointments */}
         <Card>
           <CardHeader>
-            <CardTitle className=\"flex items-center gap-2\">
-              <CalendarDays className=\"h-5 w-5\" />
+            <CardTitle className="flex items-center gap-2">
+              <CalendarDays className="h-5 w-5" />
               Upcoming Appointments
             </CardTitle>
             <CardDescription>Your scheduled medical appointments</CardDescription>
           </CardHeader>
           <CardContent>
             {upcomingAppointments.length === 0 ? (
-              <p className=\"text-gray-500 text-center py-4\">No upcoming appointments</p>
+              <p className="text-gray-500 text-center py-4">No upcoming appointments</p>
             ) : (
-              <div className=\"space-y-4\">
+              <div className="space-y-4">
                 {upcomingAppointments.map((appointment) => (
-                  <div key={appointment.id} className=\"p-3 border rounded-lg\">
-                    <div className=\"flex items-center justify-between mb-2\">
-                      <p className=\"font-medium\">{appointment.doctor_name}</p>
+                  <div key={appointment.id} className="p-3 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="font-medium">{appointment.doctor_name}</p>
                       <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'}>
                         {appointment.status}
                       </Badge>
                     </div>
-                    <p className=\"text-sm text-gray-600\">{appointment.doctor_specialty}</p>
-                    <p className=\"text-sm text-gray-500\">
+                    <p className="text-sm text-gray-600">{appointment.doctor_specialty}</p>
+                    <p className="text-sm text-gray-500">
                       {appointment.appointment_date} at {appointment.appointment_time}
                     </p>
                     {appointment.hospital_name && (
-                      <p className=\"text-sm text-gray-500\">{appointment.hospital_name}</p>
+                      <p className="text-sm text-gray-500">{appointment.hospital_name}</p>
                     )}
                   </div>
                 ))}
@@ -296,29 +296,29 @@ export default function DashboardPage() {
         {/* Recent Health Records */}
         <Card>
           <CardHeader>
-            <CardTitle className=\"flex items-center gap-2\">
-              <FileText className=\"h-5 w-5\" />
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
               Recent Health Records
             </CardTitle>
             <CardDescription>Your latest health records and documents</CardDescription>
           </CardHeader>
           <CardContent>
             {recentRecords.length === 0 ? (
-              <p className=\"text-gray-500 text-center py-4\">No health records uploaded</p>
+              <p className="text-gray-500 text-center py-4">No health records uploaded</p>
             ) : (
-              <div className=\"space-y-4\">
+              <div className="space-y-4">
                 {recentRecords.map((record) => (
-                  <div key={record.id} className=\"p-3 border rounded-lg\">
-                    <div className=\"flex items-center justify-between mb-2\">
-                      <p className=\"font-medium\">{record.title}</p>
-                      <Badge variant=\"outline\">{record.record_type}</Badge>
+                  <div key={record.id} className="p-3 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="font-medium">{record.title}</p>
+                      <Badge variant="outline">{record.record_type}</Badge>
                     </div>
-                    <p className=\"text-sm text-gray-600\">{record.description}</p>
-                    <p className=\"text-sm text-gray-500\">
+                    <p className="text-sm text-gray-600">{record.description}</p>
+                    <p className="text-sm text-gray-500">
                       {new Date(record.date_recorded).toLocaleDateString()}
                     </p>
                     {record.doctor_name && (
-                      <p className=\"text-sm text-gray-500\">Dr. {record.doctor_name}</p>
+                      <p className="text-sm text-gray-500">Dr. {record.doctor_name}</p>
                     )}
                   </div>
                 ))}
@@ -330,26 +330,26 @@ export default function DashboardPage() {
         {/* Health Insights */}
         <Card>
           <CardHeader>
-            <CardTitle className=\"flex items-center gap-2\">
-              <TrendingUp className=\"h-5 w-5\" />
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
               Health Insights
             </CardTitle>
             <CardDescription>Personalized health recommendations</CardDescription>
           </CardHeader>
           <CardContent>
             {unreadInsights.length === 0 ? (
-              <p className=\"text-gray-500 text-center py-4\">No new insights available</p>
+              <p className="text-gray-500 text-center py-4">No new insights available</p>
             ) : (
-              <div className=\"space-y-4\">
+              <div className="space-y-4">
                 {unreadInsights.map((insight) => (
-                  <div key={insight.id} className=\"p-3 border rounded-lg\">
-                    <div className=\"flex items-center justify-between mb-2\">
-                      <p className=\"font-medium\">{insight.title}</p>
+                  <div key={insight.id} className="p-3 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="font-medium">{insight.title}</p>
                       <Badge variant={insight.priority === 'high' ? 'destructive' : 'secondary'}>
                         {insight.priority}
                       </Badge>
                     </div>
-                    <p className=\"text-sm text-gray-600\">{insight.content}</p>
+                    <p className="text-sm text-gray-600">{insight.content}</p>
                   </div>
                 ))}
               </div>

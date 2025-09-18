@@ -292,6 +292,125 @@ export type Database = {
           }
         ]
       }
+      vault_documents: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          user_id: string
+          family_member_id: string | null
+          document_type: string
+          title: string
+          description: string | null
+          file_url: string
+          file_name: string
+          file_size: number
+          mime_type: string
+          is_encrypted: boolean
+          tags: string[] | null
+          metadata: Json | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id: string
+          family_member_id?: string | null
+          document_type: string
+          title: string
+          description?: string | null
+          file_url: string
+          file_name: string
+          file_size: number
+          mime_type: string
+          is_encrypted?: boolean
+          tags?: string[] | null
+          metadata?: Json | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id?: string
+          family_member_id?: string | null
+          document_type?: string
+          title?: string
+          description?: string | null
+          file_url?: string
+          file_name?: string
+          file_size?: number
+          mime_type?: string
+          is_encrypted?: boolean
+          tags?: string[] | null
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vault_documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vault_documents_family_member_id_fkey"
+            columns: ["family_member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      emergency_contacts: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          user_id: string
+          name: string
+          relationship: string
+          phone: string
+          email: string | null
+          address: string | null
+          is_primary: boolean
+          notes: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id: string
+          name: string
+          relationship: string
+          phone: string
+          email?: string | null
+          address?: string | null
+          is_primary?: boolean
+          notes?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id?: string
+          name?: string
+          relationship?: string
+          phone?: string
+          email?: string | null
+          address?: string | null
+          is_primary?: boolean
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -305,6 +424,7 @@ export type Database = {
       insight_priority: 'low' | 'medium' | 'high' | 'critical'
       gender: 'male' | 'female' | 'other' | 'prefer_not_to_say'
       relationship: 'spouse' | 'parent' | 'child' | 'sibling' | 'grandparent' | 'grandchild' | 'other'
+      document_type: 'identity' | 'medical' | 'insurance' | 'legal' | 'financial' | 'education' | 'photo' | 'other'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -332,3 +452,11 @@ export type AppointmentUpdate = Database['public']['Tables']['appointments']['Up
 export type HealthInsight = Database['public']['Tables']['health_insights']['Row']
 export type HealthInsightInsert = Database['public']['Tables']['health_insights']['Insert']
 export type HealthInsightUpdate = Database['public']['Tables']['health_insights']['Update']
+
+export type VaultDocument = Database['public']['Tables']['vault_documents']['Row']
+export type VaultDocumentInsert = Database['public']['Tables']['vault_documents']['Insert']
+export type VaultDocumentUpdate = Database['public']['Tables']['vault_documents']['Update']
+
+export type EmergencyContact = Database['public']['Tables']['emergency_contacts']['Row']
+export type EmergencyContactInsert = Database['public']['Tables']['emergency_contacts']['Insert']
+export type EmergencyContactUpdate = Database['public']['Tables']['emergency_contacts']['Update']
