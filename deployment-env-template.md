@@ -2,12 +2,20 @@
 
 ## Frontend (Vercel) Environment Variables
 
-Add these environment variables in your Vercel dashboard:
+Add these environment variables in your Vercel dashboard (Project Settings > Environment Variables):
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+TEAM_API_KEY=your_aixplain_team_api_key
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+DOC_MODEL_ID=your_doc_model_id
+SUMM_MODEL_ID=your_summ_model_id
+NEWS_MODEL_ID=your_news_model_id
+AGENT_MODEL_ID=your_agent_model_id
 ```
+
+**Important:** Make sure to set these as regular environment variables in Vercel, not as secrets. The vercel.json file has been updated to use standard environment variable syntax.
 
 ## Backend (Railway) Environment Variables
 
