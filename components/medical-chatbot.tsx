@@ -34,7 +34,7 @@ export default function MedicalChatbot() {
     {
       id: '1',
       type: 'bot',
-      content: 'Hello! I\'m SwasthAI, your medical assistant. How can I help you with your health concerns today? You can type your question, upload an image, or use voice input.',
+      content: 'Hello! I\'m SwasthAI, your AI-powered medical assistant powered by Google Gemini. I can help you with:\n\n• Symptom analysis and general health guidance\n• Understanding medical conditions\n• Medication information\n• Healthy lifestyle recommendations\n\n⚠️ **Important**: I provide general health information only. For serious concerns, emergencies, or specific medical advice, please consult a qualified healthcare professional.\n\nHow can I assist you today?',
       timestamp: new Date(),
       mediaType: 'text'
     }
@@ -43,6 +43,7 @@ export default function MedicalChatbot() {
   const [isRecording, setIsRecording] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
+  const [apiStatus, setApiStatus] = useState<'online' | 'offline' | 'checking'>('checking')
   
   const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -56,6 +57,22 @@ export default function MedicalChatbot() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Check API status on component mount
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        const response = await fetch('/api/gemini', {
+          method: 'GET',
+        })
+        setApiStatus(response.ok ? 'online' : 'offline')
+      } catch (error) {
+        setApiStatus('offline')
+      }
+    }
+    
+    checkApiStatus()
+  }, [])
 
   const handleSendMessage = async (content: string, mediaType: 'text' | 'image' | 'voice' = 'text', mediaUrl?: string) => {
     if (!content.trim() && mediaType === 'text') return
@@ -73,18 +90,63 @@ export default function MedicalChatbot() {
     setInputText('')
     setIsLoading(true)
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const botResponse: Message = {
+    try {
+      // Call Gemini API for medical assistance
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: content,
+          type: 'symptoms',
+          context: {
+            mediaType,
+            isHealthQuery: true,
+            userContext: 'Medical chatbot consultation'
+          }
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setApiStatus('online')
+        const botResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'bot',
+          content: data.response || 'I apologize, but I couldn\'t process your request. Please try again or consult a healthcare professional.',
+          timestamp: new Date(),
+          mediaType: 'text'
+        }
+        setMessages(prev => [...prev, botResponse])
+      } else {
+        setApiStatus('offline')
+        // Fallback response if API fails
+        const errorResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'bot',
+          content: 'I\'m experiencing technical difficulties with the AI service. Please try again later or consult a healthcare professional for immediate concerns.',
+          timestamp: new Date(),
+          mediaType: 'text'
+        }
+        setMessages(prev => [...prev, errorResponse])
+      }
+    } catch (error) {
+      console.error('Error calling Gemini API:', error)
+      setApiStatus('offline')
+      // Fallback to local response if API is unavailable
+      const fallbackResponse: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: getAIResponse(content, mediaType),
+        content: `${getAIResponse(content, mediaType)}\n\n⚠️ Note: AI service is currently unavailable. This is a basic response. For accurate medical advice, please consult a healthcare professional.`,
         timestamp: new Date(),
         mediaType: 'text'
       }
-      setMessages(prev => [...prev, botResponse])
+      setMessages(prev => [...prev, fallbackResponse])
+    } finally {
       setIsLoading(false)
-    }, 1500)
+    }
   }
 
   const getAIResponse = (userInput: string, mediaType: string): string => {
@@ -173,8 +235,24 @@ export default function MedicalChatbot() {
             </div>
             <div className="ml-auto flex items-center gap-2">
               <div className="flex items-center gap-1">
-                <Activity className="h-4 w-4 text-green-500 pulse-animation" />
-                <span className="text-sm text-green-600 dark:text-green-400">Online</span>
+                {apiStatus === 'online' && (
+                  <>
+                    <Activity className="h-4 w-4 text-green-500 pulse-animation" />
+                    <span className="text-sm text-green-600 dark:text-green-400">Gemini AI Online</span>
+                  </>
+                )}
+                {apiStatus === 'offline' && (
+                  <>
+                    <div className="h-4 w-4 rounded-full bg-red-500" />
+                    <span className="text-sm text-red-600 dark:text-red-400">AI Offline</span>
+                  </>
+                )}
+                {apiStatus === 'checking' && (
+                  <>
+                    <div className="h-4 w-4 rounded-full bg-yellow-500 animate-pulse" />
+                    <span className="text-sm text-yellow-600 dark:text-yellow-400">Connecting...</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -219,7 +297,7 @@ export default function MedicalChatbot() {
                           <source src={message.mediaUrl} type="audio/wav" />
                         </audio>
                       )}
-                      <p className="text-sm">{message.content}</p>
+                      <div className="text-sm whitespace-pre-wrap">{message.content}</div>
                     </div>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground/80 mt-1">
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -330,10 +408,12 @@ export default function MedicalChatbot() {
       {/* Quick Actions */}
       <div className="mt-4 flex flex-wrap gap-2 justify-center">
         {[
-          "I have a headache",
-          "Check my symptoms", 
-          "Medicine interactions",
-          "Healthy lifestyle tips"
+          "I have a headache and fever",
+          "What are the symptoms of diabetes?", 
+          "How to manage high blood pressure?",
+          "Healthy diet recommendations",
+          "Exercise tips for beginners",
+          "When should I see a doctor?"
         ].map((suggestion) => (
           <Button
             key={suggestion}

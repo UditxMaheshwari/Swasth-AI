@@ -4,8 +4,12 @@ import { useEffect, useState } from "react"
 
 export default function MouseMoveEffect() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    // Ensure we're on the client side
+    setIsClient(true)
+    
     const handleMouseMove = (event: MouseEvent) => {
       setMousePosition({ x: event.clientX, y: event.clientY })
     }
@@ -16,6 +20,11 @@ export default function MouseMoveEffect() {
       window.removeEventListener("mousemove", handleMouseMove)
     }
   }, [])
+
+  // Don't render anything on the server to prevent hydration mismatch
+  if (!isClient) {
+    return null
+  }
 
   return (
     <div

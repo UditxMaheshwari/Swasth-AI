@@ -3,7 +3,26 @@
 
 import { getSupabaseClient, createSupabaseBrowserClient, isSupabaseConfigured as checkConfig } from './supabaseClient.js';
 
-// Runtime-safe exports
-export const supabase = typeof window !== 'undefined' ? createSupabaseBrowserClient() : null;
+// Runtime-safe exports with proper client-side initialization
+let browserClient: any = null;
+
+function getSupabaseBrowserClient() {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
+  if (!browserClient) {
+    try {
+      browserClient = createSupabaseBrowserClient();
+    } catch (error) {
+      console.warn('Failed to create Supabase browser client:', error);
+      return null;
+    }
+  }
+  
+  return browserClient;
+}
+
+export const supabase = getSupabaseBrowserClient();
 export const supabaseClient = getSupabaseClient();
 export const isSupabaseConfigured = checkConfig();
