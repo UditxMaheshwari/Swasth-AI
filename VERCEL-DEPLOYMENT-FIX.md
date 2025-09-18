@@ -32,14 +32,24 @@ Updated `vercel.json` to use regular environment variables instead of secrets:
 
 ## Next Steps for Deployment
 
+### CRITICAL: Set Environment Variables BEFORE Deployment
+
+The build is failing because environment variables are not set in Vercel. You MUST add these before the next deployment:
+
 1. **Set Environment Variables in Vercel Dashboard:**
    - Go to your Vercel project dashboard
    - Navigate to Settings > Environment Variables
-   - Add the following variables:
+   - Add the following variables for ALL environments (Production, Preview, Development):
 
+   **Required for Build to Succeed:**
    ```
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   GEMINI_API_KEY=AIzaSyBd0JzFZk_j-QknnMzJP0wLrEMyPyPRZh4
+   ```
+
+   **Optional (for additional functionality):**
+   ```
    TEAM_API_KEY=your_aixplain_team_api_key
    GOOGLE_MAPS_API_KEY=your_google_maps_api_key
    DOC_MODEL_ID=your_doc_model_id
@@ -48,9 +58,16 @@ Updated `vercel.json` to use regular environment variables instead of secrets:
    AGENT_MODEL_ID=your_agent_model_id
    ```
 
-2. **Redeploy Your Application:**
-   - Trigger a new deployment in Vercel
-   - The build should now succeed without the secret reference error
+2. **How to Get Supabase Credentials:**
+   - Go to [supabase.com/dashboard](https://supabase.com/dashboard)
+   - Select your project (or create a new one)
+   - Go to Settings > API
+   - Copy the "Project URL" as `NEXT_PUBLIC_SUPABASE_URL`
+   - Copy the "anon public" key as `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+3. **Redeploy Your Application:**
+   - After setting the environment variables, trigger a new deployment
+   - The build should now succeed without the Supabase URL validation error
 
 ## Alternative: Using Vercel Secrets (Optional)
 If you prefer to use Vercel secrets, you would need to:

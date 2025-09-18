@@ -4,9 +4,15 @@
 
 Add these environment variables in your Vercel dashboard (Project Settings > Environment Variables):
 
+**Required for Build to Succeed:**
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GEMINI_API_KEY=AIzaSyBd0JzFZk_j-QknnMzJP0wLrEMyPyPRZh4
+```
+
+**Optional (for additional functionality):**
+```
 TEAM_API_KEY=your_aixplain_team_api_key
 GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 DOC_MODEL_ID=your_doc_model_id

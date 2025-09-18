@@ -10,7 +10,7 @@ const teamMembers = [
   {
     name: "Udit Maheshwari",
     role: "Frontend Designer & Backend Developer",
-    bio: "Udit is a skilled MErnStack develoepr.",
+    bio: "Udit is a skilled MERNStack develoepr.",
     links: {
       github: "",
       linkedin: "",
@@ -29,8 +29,8 @@ const teamMembers = [
   },
   {
     name: "Ishan Khan",
-    role: "ThreeJS expert",
-    bio: "IShan is an expert in three js models enhancing 3d model structure .",
+    role: "Three.JS expert",
+    bio: "Ishan is an expert in three js models enhancing 3d model structure .",
     links: {
       github: "",
       linkedin: "",
@@ -48,9 +48,9 @@ const teamMembers = [
       },
   },
   {
-    name: "Riya",
+    name: "Ritu Singh",
     role: "ML Specialist",
-    bio: "Riya is a creative ML designer who focuses on crafting intuitive and engaging models along with it's profieciency'. She ensures that AI-powered applications have extreme precision.",
+    bio: "Ritu Singh is a creative ML designer who focuses on crafting intuitive and engaging models along with it's profieciency'. She ensures that AI-powered applications have extreme precision.",
     links: {
       github: "",
       linkedin: "",
@@ -58,9 +58,9 @@ const teamMembers = [
     },
   },
   {
-    name: "Muskan",
+    name: "Muskan Bhadani",
     role: " ML Specialist",
-    bio: "Riya is a creative ML designer who focuses on crafting intuitive and engaging models along with it's profieciency'. She ensures that AI-powered applications have extreme precision",
+    bio: "Muskan Bhadani is a creative ML designer who builds accurate, user-focused models to make AI applications practical and impactful",
     links: {
       github: "",
       linkedin: "",
