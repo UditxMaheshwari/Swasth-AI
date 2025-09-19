@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   
   // Create a Supabase client configured to use cookies
-  const supabase = createClient()
+  const supabase = createClient(request, response)
   
   // Get the session from the request cookies
   const { data: { session } } = await supabase.auth.getSession()

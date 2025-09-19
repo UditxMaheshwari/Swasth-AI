@@ -9,13 +9,22 @@ export function createClient(request: NextRequest, response: NextResponse) {
     {
       cookies: {
         get(name: string) {
-          return request.cookies.get(name)?.value
+          // ✅ Make sure request.cookies exists
+          return request.cookies.get(name)?.value ?? null
         },
         set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({ name, value, ...options })
+          try {
+            response.cookies.set({ name, value, ...options })
+          } catch {
+            // Middleware runs in an edge context — ignore write failures
+          }
         },
         remove(name: string, options: CookieOptions) {
-          response.cookies.set({ name, value: '', ...options })
+          try {
+            response.cookies.set({ name, value: '', ...options })
+          } catch {
+            // Ignore errors in edge
+          }
         },
       },
     }
