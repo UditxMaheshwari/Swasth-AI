@@ -13,16 +13,18 @@ import { useAuth } from "@/contexts/auth-context";
 export default function SignupPage() {
   const router = useRouter();
   const { signUp } = useAuth();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Derived password strength metadata
+  // Password strength calculation
   const strength = useMemo(() => {
     const pwd = formData.password || "";
     const length8 = pwd.length >= 8;
@@ -32,14 +34,13 @@ export default function SignupPage() {
     const number = /\d/.test(pwd);
     const symbol = /[^A-Za-z0-9]/.test(pwd);
 
-    // Score out of 6
     let score = 0;
     if (length8) score += 1;
     if (lower) score += 1;
     if (upper) score += 1;
     if (number) score += 1;
     if (symbol) score += 1;
-    if (length12) score += 1; // bonus for length
+    if (length12) score += 1;
 
     const percent = Math.round((score / 6) * 100);
     let label = "Very weak";
@@ -59,22 +60,13 @@ export default function SignupPage() {
       percent,
       label,
       color,
-      checks: {
-        length8,
-        lower,
-        upper,
-        number,
-        symbol,
-      },
+      checks: { length8, lower, upper, number, symbol },
     };
   }, [formData.password]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,14 +74,12 @@ export default function SignupPage() {
     setIsLoading(true);
     setError(null);
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
 
-    // Client-side password strength validation (align with Supabase default policy)
     if (formData.password.length < 8) {
       setError("Password must be at least 8 characters long.");
       setIsLoading(false);
@@ -97,43 +87,46 @@ export default function SignupPage() {
     }
 
     try {
-      const { data, error } = await signUp(formData.email, formData.password, { name: formData.name });
-      
-      if (error) {
-        // Map common Supabase auth errors to user-friendly messages
-        const anyErr: any = error as any;
+      const { data, error: signUpError } = await signUp(
+        formData.email,
+        formData.password,
+        { name: formData.name }
+      );
+
+      if (signUpError) {
+        const anyErr: any = signUpError;
         const code = anyErr?.code as string | undefined;
         const name = anyErr?.name as string | undefined;
-        const reasons: string[] | undefined = (anyErr?.reasons as string[]) || (anyErr?.cause?.reasons as string[]);
+        const reasons: string[] | undefined =
+          (anyErr?.reasons as string[]) || (anyErr?.cause?.reasons as string[]);
 
-        if (code === 'user_already_exists') {
-          setError('An account already exists with this email. Try signing in instead.');
-        } else if (code === 'weak_password' || name === 'AuthWeakPasswordError') {
-          if (reasons?.includes('length')) {
-            setError('Password is too weak: it must be at least 8 characters long.');
+        if (code === "user_already_exists") {
+          setError("An account already exists with this email. Try signing in instead.");
+        } else if (code === "weak_password" || name === "AuthWeakPasswordError") {
+          if (reasons?.includes("length")) {
+            setError("Password is too weak: it must be at least 8 characters long.");
           } else {
-            setError('Password is too weak. Please choose a stronger password.');
+            setError("Password is too weak. Please choose a stronger password.");
           }
         } else {
-          setError(anyErr?.message || 'Failed to create account. Please try again.');
+          setError(anyErr?.message || "Failed to create account. Please try again.");
         }
         setIsLoading(false);
         return;
       }
-      
-      // Check if email confirmation is required
+
+      // Safe redirect handling
+      let redirectUrl = "/auth/login"; // default fallback
       if (data?.user && !data.session) {
-        // User created but needs email confirmation
-        router.push("/auth/login?message=check-email&email=" + encodeURIComponent(formData.email));
+        redirectUrl = `/auth/login?message=check-email&email=${encodeURIComponent(formData.email)}`;
       } else if (data?.session) {
-        // User is automatically signed in (email confirmation disabled)
-        router.push("/dashboard");
+        redirectUrl = "/dashboard";
       } else {
-        // Fallback - redirect to login
-        router.push("/auth/login?registered=true");
+        redirectUrl = "/auth/login?registered=true";
       }
+
+      router.push(redirectUrl);
     } catch (err: any) {
-      // Network or unexpected error
       setError(err?.message || "Failed to create account. Please try again.");
       console.error(err);
     } finally {
@@ -198,7 +191,6 @@ export default function SignupPage() {
                 required
                 className="h-9 sm:h-10 text-sm sm:text-base"
               />
-              {/* Password strength meter */}
               <div className="space-y-2 pt-1">
                 <div className="h-2 w-full bg-muted rounded">
                   <div
