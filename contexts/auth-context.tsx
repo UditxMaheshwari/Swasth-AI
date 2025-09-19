@@ -32,39 +32,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const handleAuthStateChange = useCallback(async (event: string, session: Session | null) => {
     console.log('Auth state changed:', event, session?.user?.email);
-    console.log('Full session data:', session);
     
+    // Always update the session and user state
     setSession(session);
     setUser(session?.user ?? null);
-    setIsLoading(false);
-
+    
     // Handle different auth events
     if (event === 'SIGNED_OUT') {
       console.log('User signed out');
       setSession(null);
       setUser(null);
-      // Force a router refresh to update middleware
-      router.refresh();
+      
+      // Let the middleware handle the redirect
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     } else if (event === 'SIGNED_IN' && session) {
       console.log('User signed in successfully:', session.user.email);
-      console.log('Calling router.refresh() to update middleware');
-      // Force a router refresh to update middleware
-      router.refresh();
-    } else if (event === 'TOKEN_REFRESHED' && session) {
-      console.log('Token refreshed for:', session.user.email);
-      // Session was refreshed, update state
-      setSession(session);
-      setUser(session.user);
+      
+      // Only redirect if we're on the login page
+      // The middleware will handle the actual redirect
+      if (window.location.pathname === '/login' || window.location.pathname === '/auth/login') {
+        // Use a small delay to ensure the UI updates before redirecting
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
+      }
     }
+    
+    setIsLoading(false);
   }, [router]);
 
   useEffect(() => {
     let mounted = true;
+    
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     setIsClient(true);
 
     // Get initial session
     const getInitialSession = async () => {
       try {
+        // Skip if supabase is not properly configured
+        if (!supabase) {
+          console.warn('Supabase client not initialized');
+          setIsLoading(false);
+          return;
+        }
+        
         debugSupabaseConfig();
         console.log('Getting initial session...');
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -129,24 +145,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       console.log('Attempting sign in with:', email);
       
-      const result = await supabase.auth.signInWithPassword({ 
+      const { data, error } = await supabase.auth.signInWithPassword({ 
         email, 
         password 
       });
       
-      debugAuthAttempt(email, result);
+      debugAuthAttempt(email, { data, error });
       
-      if (result.error) {
-        console.error('SignIn error:', result.error);
-        return { data: result.data, error: result.error };
+      if (error) {
+        console.error('SignIn error:', error);
+        return { data: null, error };
       }
 
-      if (result.data?.session) {
-        console.log('Sign in successful, session:', result.data.session.user.email);
+      if (data?.session) {
+        console.log('Sign in successful, session user:', data.session.user.email);
+        // Update the session state immediately
+        setSession(data.session);
+        setUser(data.session.user);
+        
+        // Force a refresh of the auth state
+        const { data: { session: updatedSession } } = await supabase.auth.getSession();
+        if (updatedSession) {
+          setSession(updatedSession);
+          setUser(updatedSession.user);
+        }
       }
 
-      // The auth state change will be handled by the listener
-      return { data: result.data, error: null };
+      return { data, error: null };
     } catch (error) {
       console.error('SignIn error:', error);
       return { data: null, error: error as Error };

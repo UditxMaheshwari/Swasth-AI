@@ -1,129 +1,73 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// /middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createClient } from '@/lib/supabase/middleware'
 
-export async function middleware(req: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: req.headers,
-    },
-  });
+// Define protected and auth routes
+const protectedRoutes = ['/dashboard', '/profile', '/family-vault', '/health-records']
+const authRoutes = ['/auth/login', '/auth/signup']
+const publicRoutes = ['/', '/auth/reset-password', '/auth/update-password']
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          req.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: any) {
-          req.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-        },
-      },
-    }
-  );
-
-  const protectedRoutes = [
-    '/dashboard',
-    '/profile',
-    '/family-vault',
-    '/health-check',
-    '/health-insights',
-  ];
-  const authRoutes = [
-    '/auth/login',
-    '/auth/signup',
-    '/auth/forgot-password',
-  ];
-  const path = req.nextUrl.pathname;
-
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
-    // Debug logging (only in development)
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[Middleware] ${path} - Session: ${session?.user?.email || 'None'}`);
-      if (error) console.log(`[Middleware] Error:`, error.message);
-    }
-    
-    // Handle session errors gracefully
-    if (error) {
-      console.error('Middleware session error:', error.message);
-      // If there's an error getting session and we're on a protected route, redirect to login
-      if (protectedRoutes.some(route => path.startsWith(route))) {
-        const redirectUrl = new URL('/auth/login', req.url);
-        redirectUrl.searchParams.set('redirectTo', path);
-        return NextResponse.redirect(redirectUrl);
-      }
-      return response;
-    }
-
-    // Redirect unauthenticated users from protected routes
-    if (protectedRoutes.some(route => path.startsWith(route)) && !session) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Middleware] Redirecting ${path} to login - no session`);
-      }
-      const redirectUrl = new URL('/auth/login', req.url);
-      redirectUrl.searchParams.set('redirectTo', path);
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    // Redirect authenticated users from auth routes to dashboard
-    if (authRoutes.some(route => path.startsWith(route)) && session) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[Middleware] Redirecting ${path} to dashboard - has session`);
-      }
-      // Check if there's a redirectTo parameter
-      const redirectTo = req.nextUrl.searchParams.get('redirectTo');
-      if (redirectTo && protectedRoutes.some(route => redirectTo.startsWith(route))) {
-        return NextResponse.redirect(new URL(redirectTo, req.url));
-      }
-      return NextResponse.redirect(new URL('/dashboard', req.url));
-    }
-
-  } catch (error) {
-    console.error('Middleware error:', error);
-    // On error, allow the request to continue
-    return response;
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  
+  // Skip middleware for API routes, static files, and Next.js internals
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/favicon.ico') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next()
   }
 
-  return response;
+  // Create a response object that we can modify
+  const response = NextResponse.next()
+  
+  // Create a Supabase client configured to use cookies
+  const supabase = createClient()
+  
+  // Get the session from the request cookies
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
+  const isPublicRoute = publicRoutes.includes(pathname)
+
+  console.log(`[Middleware] ${pathname} - Authenticated: ${!!session}`)
+
+  // Redirect authenticated users away from auth pages to dashboard
+  if (session && isAuthRoute) {
+    const redirectUrl = new URL('/dashboard', request.url)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Allow access to public routes
+  if (isPublicRoute) {
+    return response
+  }
+
+  // Redirect unauthenticated users from protected routes to login
+  if (!session && isProtectedRoute) {
+    const loginUrl = new URL('/auth/login', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // For all other cases, continue with the response
+  return response
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder files
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
   ],
-};
+}

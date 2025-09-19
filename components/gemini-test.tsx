@@ -19,13 +19,36 @@ export default function GeminiTest() {
     setTestResult({ status: 'idle', message: 'Testing Gemini API connection...' })
 
     try {
-      // Test the API health endpoint first
+      // First, run diagnostics
+      const diagnosticResponse = await fetch('/api/debug-gemini')
+      const diagnostics = await diagnosticResponse.json()
+
+      if (!diagnostics.status?.hasApiKey) {
+        setTestResult({
+          status: 'error',
+          message: 'No Gemini API key found. Please set up your API key first.',
+          response: `Diagnostics:\n${diagnostics.recommendations?.join('\n') || 'No recommendations available'}`
+        })
+        return
+      }
+
+      if (!diagnostics.status?.keyFormat) {
+        setTestResult({
+          status: 'error',
+          message: 'Invalid API key format. Gemini keys should start with "AIzaSy".',
+          response: `Current key: ${diagnostics.environment?.GEMINI_API_KEY || 'Not set'}`
+        })
+        return
+      }
+
+      // Test the API health endpoint
       const healthResponse = await fetch('/api/gemini', {
         method: 'GET',
       })
 
       if (!healthResponse.ok) {
-        throw new Error('Gemini API health check failed')
+        const healthData = await healthResponse.json()
+        throw new Error(`API health check failed: ${healthData.error || 'Unknown error'}`)
       }
 
       // Test actual AI response

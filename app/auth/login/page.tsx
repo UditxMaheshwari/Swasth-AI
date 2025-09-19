@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,53 +34,81 @@ function LoginForm() {
     }
   }, [searchParams]);
 
+  // Check for existing session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error checking session:', error);
+          return;
+        }
+        
+        if (session) {
+          // Get redirect URL from query params or default to dashboard
+          const urlParams = new URLSearchParams(window.location.search);
+          let redirectTo = urlParams.get('redirectTo') || '/dashboard';
+          
+          // Prevent redirect loops
+          if (redirectTo === '/login' || redirectTo.startsWith('/auth/login')) {
+            redirectTo = '/dashboard';
+          }
+          
+          console.log('Session exists, redirecting to:', redirectTo);
+          window.location.href = redirectTo;
+        }
+      } catch (err) {
+        console.error('Session check error:', err);
+      }
+    };
+    
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      checkSession();
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+    
     setIsLoading(true);
     setError("");
+    setMessage("");
 
     try {
+      // Sign in using the auth context
       const { error } = await signIn(email, password);
+      
       if (error) {
         // Map common Supabase auth errors to user-friendly messages
         const anyErr: any = error as any;
         const code = anyErr?.code as string | undefined;
+        let errorMessage = 'Failed to login. Please try again.';
         
-        if (code === 'invalid_credentials') {
-          setError('Invalid email or password. Please check your credentials and try again.');
+        if (code === 'invalid_credentials' || code === 'invalid_grant') {
+          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
         } else if (code === 'email_not_confirmed') {
-          setError('Please check your email and click the confirmation link before signing in.');
+          errorMessage = 'Please check your email and click the confirmation link before signing in.';
         } else if (code === 'too_many_requests') {
-          setError('Too many login attempts. Please wait a moment and try again.');
-        } else {
-          setError(anyErr?.message || 'Failed to login. Please try again.');
+          errorMessage = 'Too many login attempts. Please wait a moment and try again.';
+        } else if (anyErr?.message) {
+          errorMessage = anyErr.message;
         }
-        setIsLoading(false);
-        return;
+        
+        setError(errorMessage);
+        console.error('Login error:', { code, message: anyErr?.message });
+      } else {
+        // Show success message
+        setMessage("Login successful! Redirecting...");
+        
+        // The auth context will handle the redirect
+        // No need to redirect here to prevent loops
       }
-      
-      // Clear any messages on successful login
-      setMessage("");
-      
-      // Check if there's a redirect URL in the query params
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTo = urlParams.get('redirectTo');
-      
-      console.log('Login successful, redirecting to:', redirectTo || '/dashboard');
-      
-      // Add a small delay to ensure auth state is updated
-      setTimeout(() => {
-        if (redirectTo) {
-          console.log('Redirecting to:', redirectTo);
-          router.push(redirectTo);
-        } else {
-          console.log('Redirecting to dashboard');
-          router.push("/dashboard");
-        }
-      }, 100);
     } catch (err: any) {
-      setError(err?.message || "Failed to login. Please try again.");
-      console.error(err);
+      setError(err?.message || "An unexpected error occurred. Please try again.");
+      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }
