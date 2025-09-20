@@ -4,15 +4,16 @@
 
 After deploying to Render, you'll need to set the following environment variables in your Render dashboard for the **swasthai-backend** service:
 
-### AI/ML Service Keys
+### Essential Keys (Required for basic deployment):
+- **GEMINI_API_KEY**: Your Google Gemini AI API key for core AI features
+
+### Optional Keys (for additional features):
 - **TEAM_API_KEY**: Your AIXplain team API key for accessing AI models
+- **GOOGLE_MAPS_API_KEY**: Google Maps API key for health center location services
 - **DOC_MODEL_ID**: Model ID for doctor recommendations 
 - **SUMM_MODEL_ID**: Model ID for text summarization
 - **NEWS_MODEL_ID**: Model ID for health news
 - **AGENT_MODEL_ID**: Main AI agent model ID
-
-### Google Services
-- **GOOGLE_MAPS_API_KEY**: Google Maps API key for health center location services
 
 ## How to Set Environment Variables in Render
 

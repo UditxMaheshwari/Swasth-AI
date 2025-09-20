@@ -32,18 +32,21 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: TEAM_API_KEY
+      - key: GEMINI_API_KEY
         sync: false  # Set this in Render dashboard
-      - key: GOOGLE_MAPS_API_KEY
-        sync: false  # Set this in Render dashboard
-      - key: DOC_MODEL_ID
-        sync: false  # Set this in Render dashboard
-      - key: SUMM_MODEL_ID
-        sync: false  # Set this in Render dashboard
-      - key: NEWS_MODEL_ID
-        sync: false  # Set this in Render dashboard
-      - key: AGENT_MODEL_ID
-        sync: false  # Set this in Render dashboard
+      # Optional API keys - can be added later if needed
+      # - key: TEAM_API_KEY
+      #   sync: false
+      # - key: GOOGLE_MAPS_API_KEY
+      #   sync: false
+      # - key: DOC_MODEL_ID
+      #   sync: false
+      # - key: SUMM_MODEL_ID
+      #   sync: false
+      # - key: NEWS_MODEL_ID
+      #   sync: false
+      # - key: AGENT_MODEL_ID
+      #   sync: false
 
   # ML Backend - Flask ML API
   - type: web

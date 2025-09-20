@@ -5,21 +5,33 @@ import ast
 from dotenv import load_dotenv
 
 load_dotenv()
-TEAM_API_KEY = os.getenv("TEAM_API_KEY")
-os.environ["TEAM_API_KEY"] = TEAM_API_KEY
-
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from langdetect import detect
-from aixplain.factories import ModelFactory, AgentFactory
 
+# Get API keys with defaults
+TEAM_API_KEY = os.getenv("TEAM_API_KEY")
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-doc_model = ModelFactory.get(os.getenv("DOC_MODEL_ID"))
-summ_model = ModelFactory.get(os.getenv("SUMM_MODEL_ID"))
-news_model = ModelFactory.get(os.getenv("NEWS_MODEL_ID"))
-main_agent = AgentFactory.get(os.getenv("AGENT_MODEL_ID"))
+# Initialize AI models only if API keys are available
+doc_model = None
+summ_model = None
+news_model = None
+main_agent = None
+
+if TEAM_API_KEY:
+    try:
+        os.environ["TEAM_API_KEY"] = TEAM_API_KEY
+        from langdetect import detect
+        from aixplain.factories import ModelFactory, AgentFactory
+        
+        doc_model = ModelFactory.get(os.getenv("DOC_MODEL_ID")) if os.getenv("DOC_MODEL_ID") else None
+        summ_model = ModelFactory.get(os.getenv("SUMM_MODEL_ID")) if os.getenv("SUMM_MODEL_ID") else None
+        news_model = ModelFactory.get(os.getenv("NEWS_MODEL_ID")) if os.getenv("NEWS_MODEL_ID") else None
+        main_agent = AgentFactory.get(os.getenv("AGENT_MODEL_ID")) if os.getenv("AGENT_MODEL_ID") else None
+    except Exception as e:
+        print(f"Warning: Could not initialize AI models: {e}")
 
 app = Flask(__name__)
 # CORS configuration for Render deployment
@@ -89,10 +101,15 @@ def get_route(start_lat, start_lon, end_lat, end_lon):
 @app.route("/ask", methods=["POST"])
 def ask():
     try:
+        if not main_agent or not summ_model:
+            return jsonify({"error": "AI services not configured. Please contact administrator."}), 503
+        
         data = request.json
         question = data.get("question", "")
         if not question:
             return jsonify({"error": "No question provided"}), 400
+        
+        from langdetect import detect
         output_language = detect(question)
         formatted_query = f"{question} Response in {output_language}"
         agent_response = main_agent.run(formatted_query)
@@ -111,6 +128,9 @@ def ask():
 @app.route("/doctors", methods=["POST"])
 def find_doctors():
     try:
+        if not doc_model:
+            return jsonify({"error": "Doctor recommendation service not configured."}), 503
+        
         data = request.json
         condition = data.get("condition", "")
         location = data.get("location", "")
@@ -124,6 +144,9 @@ def find_doctors():
 @app.route("/health-centers", methods=["POST"])
 def find_health_centers():
     try:
+        if not GOOGLE_MAPS_API_KEY:
+            return jsonify({"error": "Location services not configured."}), 503
+        
         data = request.json
         latitude = data.get("latitude")
         longitude = data.get("longitude")
@@ -141,6 +164,9 @@ def find_health_centers():
 @app.route("/news", methods=["POST"])
 def get_news():
     try:
+        if not news_model:
+            return jsonify({"error": "News service not configured."}), 503
+        
         data = request.json
         language = data.get("language", "")
         if not language:
