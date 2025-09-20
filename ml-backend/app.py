@@ -1,8 +1,16 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import joblib
 import numpy as np
 
 app = Flask(__name__)
+
+# CORS configuration for Render deployment
+CORS(app, origins=[
+    "http://localhost:3000",  # Local development
+    "https://*.onrender.com",  # Render domains
+    "*"  # Allow all for now - tighten in production
+])
 
 # Load ML models
 diabetes_model = joblib.load("models/diabetes_model.pkl")

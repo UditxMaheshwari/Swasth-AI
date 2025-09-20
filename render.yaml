@@ -1,0 +1,61 @@
+services:
+  # Frontend - Next.js Application
+  - type: web
+    name: swasthai-frontend
+    env: node
+    plan: free
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: swasthai-backend
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_ML_API_URL
+        fromService:
+          type: web
+          name: swasthai-ml-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  # Main Backend - Flask API
+  - type: web
+    name: swasthai-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: TEAM_API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: DOC_MODEL_ID
+        sync: false  # Set this in Render dashboard
+      - key: SUMM_MODEL_ID
+        sync: false  # Set this in Render dashboard
+      - key: NEWS_MODEL_ID
+        sync: false  # Set this in Render dashboard
+      - key: AGENT_MODEL_ID
+        sync: false  # Set this in Render dashboard
+
+  # ML Backend - Flask ML API
+  - type: web
+    name: swasthai-ml-backend
+    env: python
+    plan: free
+    buildCommand: |
+      cd ml-backend && 
+      pip install -r requirements.txt
+    startCommand: cd ml-backend && python app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000

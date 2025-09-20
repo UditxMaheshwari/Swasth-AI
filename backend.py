@@ -22,7 +22,12 @@ news_model = ModelFactory.get(os.getenv("NEWS_MODEL_ID"))
 main_agent = AgentFactory.get(os.getenv("AGENT_MODEL_ID"))
 
 app = Flask(__name__)
-CORS(app, origins=["*"])  # Configure for production domains later
+# CORS configuration for Render deployment
+CORS(app, origins=[
+    "http://localhost:3000",  # Local development
+    "https://*.onrender.com",  # Render domains
+    "*"  # Allow all for now - tighten in production
+])
 
 @app.route("/", methods=["GET"])
 def health_check():
