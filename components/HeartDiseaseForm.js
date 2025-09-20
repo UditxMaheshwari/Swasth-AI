@@ -37,7 +37,7 @@ const HeartDiseaseForm = () => {
         Object.entries(formData).map(([key, value]) => [key, parseFloat(value) || 0])
       );
 
-      const response = await fetch('http://127.0.0.1:5000/predict/heart', {
+      const response = await fetch('/api/predict/heart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(numericData)

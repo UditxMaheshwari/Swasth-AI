@@ -3,26 +3,33 @@
 
 import { getSupabaseClient, createSupabaseBrowserClient, isSupabaseConfigured as checkConfig } from './supabaseClient.js';
 
-// Runtime-safe exports with proper client-side initialization
-let browserClient: any = null;
+// Lazy client initialization to prevent SSR issues
+let browserClientInstance: any = null;
+let serverClientInstance: any = null;
 
-function getSupabaseBrowserClient() {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  
-  if (!browserClient) {
-    try {
-      browserClient = createSupabaseBrowserClient();
-    } catch (error) {
-      console.warn('Failed to create Supabase browser client:', error);
-      return null;
+// Safe browser client getter
+function getSafeSupabaseClient() {
+  if (typeof window !== 'undefined') {
+    // Browser environment
+    if (!browserClientInstance) {
+      try {
+        browserClientInstance = createSupabaseBrowserClient();
+      } catch (error) {
+        console.warn('Failed to create Supabase browser client:', error);
+        return getSupabaseClient(); // fallback to server client
+      }
     }
+    return browserClientInstance;
+  } else {
+    // Server environment
+    if (!serverClientInstance) {
+      serverClientInstance = getSupabaseClient();
+    }
+    return serverClientInstance;
   }
-  
-  return browserClient;
 }
 
-export const supabase = getSupabaseBrowserClient();
+// Export the safe client getter
+export const supabase = getSafeSupabaseClient();
 export const supabaseClient = getSupabaseClient();
 export const isSupabaseConfigured = checkConfig();

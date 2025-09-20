@@ -193,7 +193,6 @@ const ParkinsonsForm = () => {
                   {result.prediction === 1 
                     ? 'The model predicts a high risk of Parkinson\'s disease based on the provided voice measurements. Please consult with a healthcare professional for further evaluation.'
                     : 'The model predicts a low risk of Parkinson\'s disease based on the provided voice measurements.'}
-                  }
                 </p>
               </div>
             </div>

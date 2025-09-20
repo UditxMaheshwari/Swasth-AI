@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import MedicalChatbot from "@/components/medical-chatbot"
-import GeminiTest from "@/components/gemini-test"
 
 const translations = [
   { lang: "English", text: "AI-Powered Healthcare Support" },
@@ -62,21 +61,11 @@ export default function Hero() {
           </motion.p>
         </motion.div>
 
-        {/* Gemini API Test */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="flex justify-center"
-        >
-          <GeminiTest />
-        </motion.div>
-
         {/* Medical Chatbot */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.6 }}
+          transition={{ duration: 1, delay: 0.4 }}
           className="flex justify-center"
         >
           <MedicalChatbot />
@@ -86,7 +75,7 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto text-center"
         >
           {[

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Dynamic3DMedicalViewer from './Dynamic3DMedicalViewer';
 
 export default function DiabetesWithAnatomy() {
   const [prediction, setPrediction] = useState(null); // "Diabetic" or "Not Diabetic"
@@ -29,11 +30,25 @@ export default function DiabetesWithAnatomy() {
     setPrediction(null);
 
     try {
-      const numericData = Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [key, parseFloat(value) || 0])
-      );
+      // Map lowercase field names to capitalized names expected by the backend
+      const fieldMapping = {
+        pregnancies: 'Pregnancies',
+        glucose: 'Glucose',
+        bloodpressure: 'BloodPressure',
+        skinthickness: 'SkinThickness',
+        insulin: 'Insulin',
+        bmi: 'BMI',
+        diabetespedigreefunction: 'DiabetesPedigreeFunction',
+        age: 'Age'
+      };
+      
+      const numericData = {};
+      Object.entries(formData).forEach(([key, value]) => {
+        const backendKey = fieldMapping[key] || key;
+        numericData[backendKey] = parseFloat(value) || 0;
+      });
 
-      const response = await fetch('http://127.0.0.1:5000/predict/diabetes', {
+      const response = await fetch('/api/predict/diabetes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(numericData)
@@ -65,18 +80,6 @@ export default function DiabetesWithAnatomy() {
     { name: 'age', label: 'Age', type: 'number', step: '1', min: '0' }
   ];
 
-  const handleFullscreen = () => {
-    const iframe = document.querySelector('iframe.bio-widget');
-    if (iframe) {
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) { // Safari
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) { // IE11
-        iframe.msRequestFullscreen();
-      }
-    }
-  };
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4">
@@ -138,41 +141,71 @@ export default function DiabetesWithAnatomy() {
         </div>
       )}
 
-      {/* BioDigital Widget - Only show if Diabetic */}
-      {prediction === 'Diabetic' && (
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-gray-900">Diabetes Information</h3>
-            <button
-              onClick={handleFullscreen}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 011.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 011.414-1.414L15 13.586V12a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              View Fullscreen
-            </button>
+      {/* Dynamic 3D Medical Visualization - Always show, changes based on prediction */}
+      <div className="mt-8">
+        <Dynamic3DMedicalViewer 
+          condition="normal" 
+          prediction={prediction}
+          title={prediction ? "Medical Visualization - " + prediction : "Normal Anatomy"}
+          autoSwitchBasedOnPrediction={true}
+          className="w-full"
+        />
+        
+        {prediction && (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Diabetes-specific information */}
+            {prediction === 'Diabetic' && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <h4 className="font-semibold text-red-800 mb-2 flex items-center">
+                  <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+                  Diabetes Risk Factors
+                </h4>
+                <ul className="text-red-700 text-sm space-y-1">
+                  <li>• High blood glucose levels</li>
+                  <li>• Pancreatic dysfunction</li>
+                  <li>• Insulin resistance</li>
+                  <li>• Metabolic complications</li>
+                </ul>
+              </div>
+            )}
+            
+            {/* General health information */}
+            <div className={`p-4 rounded-lg border ${
+              prediction === 'Diabetic' 
+                ? 'bg-orange-50 border-orange-200' 
+                : 'bg-green-50 border-green-200'
+            }`}>
+              <h4 className={`font-semibold mb-2 flex items-center ${
+                prediction === 'Diabetic' ? 'text-orange-800' : 'text-green-800'
+              }`}>
+                <span className={`w-4 h-4 rounded-full mr-2 ${
+                  prediction === 'Diabetic' ? 'bg-orange-500' : 'bg-green-500'
+                }`}></span>
+                {prediction === 'Diabetic' ? 'Recommended Actions' : 'Health Maintenance'}
+              </h4>
+              <ul className={`text-sm space-y-1 ${
+                prediction === 'Diabetic' ? 'text-orange-700' : 'text-green-700'
+              }`}>
+                {prediction === 'Diabetic' ? (
+                  <>
+                    <li>• Consult an endocrinologist</li>
+                    <li>• Monitor blood glucose regularly</li>
+                    <li>• Follow a diabetic-friendly diet</li>
+                    <li>• Maintain regular exercise</li>
+                  </>
+                ) : (
+                  <>
+                    <li>• Continue healthy lifestyle</li>
+                    <li>• Regular health check-ups</li>
+                    <li>• Balanced diet and exercise</li>
+                    <li>• Monitor for risk factors</li>
+                  </>
+                )}
+              </ul>
+            </div>
           </div>
-          
-          <div className="relative w-full" style={{ paddingBottom: '75%' }}> {/* 4:3 aspect ratio */}
-            <iframe
-              className="bio-widget absolute top-0 left-0 w-full h-full rounded-lg shadow-lg border border-gray-200"
-              src="https://human.biodigital.com/widget/?be=2S0t&background.colors=0,0,0,0,0,0,0,0&initial.hand-hint=true&ui-info=true&ui-fullscreen=true&ui-center=false&ui-dissect=true&ui-zoom=true&ui-help=true&ui-tools-display=primary&uaid=3iSxx"
-              title="BioDigital Human Widget - Diabetes Information"
-              allowFullScreen
-              loading="lazy"
-            />
-          </div>
-          
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-medium text-blue-800 mb-2">Understanding Your Results</h4>
-            <p className="text-sm text-blue-700">
-              The 3D model above highlights areas of the body commonly affected by diabetes. 
-              Please consult with a healthcare professional for personalized medical advice.
-            </p>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       switch (event) {
         case 'SIGNED_OUT':
-          safePush('/login');
+          safePush('/auth/login');
           break;
         case 'SIGNED_IN':
           safePush('/dashboard');
@@ -139,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       await supabase.auth.signOut();
-      safePush('/login');
+      safePush('/auth/login');
     } catch (error) {
       console.error('SignOut error:', error);
     } finally {
