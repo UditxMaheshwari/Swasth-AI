@@ -38,7 +38,12 @@ After deployment starts, you need to set the environment variables:
 1. Go to your Render dashboard
 2. Click on the **swasthai-backend** service
 3. Go to **Environment** tab
-4. Add the following variables:
+4. Add the following **essential** variables:
+   - `GEMINI_API_KEY`: Your Google Gemini AI API key
+   - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL  
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon key
+
+   **Optional variables** (for additional features):
    - `TEAM_API_KEY`: Your AIXplain API key
    - `GOOGLE_MAPS_API_KEY`: Your Google Maps API key
    - `DOC_MODEL_ID`: Doctor recommendation model ID

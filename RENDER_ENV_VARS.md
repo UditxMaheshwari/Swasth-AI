@@ -6,6 +6,8 @@ After deploying to Render, you'll need to set the following environment variable
 
 ### Essential Keys (Required for basic deployment):
 - **GEMINI_API_KEY**: Your Google Gemini AI API key for core AI features
+- **NEXT_PUBLIC_SUPABASE_URL**: Your Supabase project URL
+- **NEXT_PUBLIC_SUPABASE_ANON_KEY**: Your Supabase anonymous/public key
 
 ### Optional Keys (for additional features):
 - **TEAM_API_KEY**: Your AIXplain team API key for accessing AI models

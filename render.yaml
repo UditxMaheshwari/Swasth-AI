@@ -19,6 +19,12 @@ services:
           type: web
           name: swasthai-ml-backend
           envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false  # Set this in Render dashboard
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false  # Set this in Render dashboard
+      - key: GEMINI_API_KEY
+        sync: false  # Set this in Render dashboard
 
   # Main Backend - Flask API
   - type: web
@@ -33,6 +39,10 @@ services:
       - key: PORT
         value: 10000
       - key: GEMINI_API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false  # Set this in Render dashboard
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         sync: false  # Set this in Render dashboard
       # Optional API keys - can be added later if needed
       # - key: TEAM_API_KEY
